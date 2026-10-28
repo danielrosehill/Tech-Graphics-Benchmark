@@ -11,7 +11,8 @@ so the annotation Space doesn't reveal the model before an annotation is saved.
 Calls https://fal.run/<endpoint> (synchronous). Model-specific inputs go in the config's `args`;
 switch off prompt expansion wherever a model has it, or the model rewrites the exact strings.
 fal responses carry no cost, so spend is the config's usd_per_image (from the model page or
-the pricing API) summed per success; the fal usage dashboard is the check.
+the pricing API) summed per success; the fal usage dashboard is the check. Each manifest row
+records that price as usd_per_image, which the Space shows so value for money can be rated.
 """
 import argparse
 import hashlib
@@ -67,6 +68,7 @@ def main():
         rows[gen_id] = {"gen_id": gen_id, "run_id": cfg["run_id"], "prompt_id": p["id"], "model": m["label"],
                         "endpoint": m["endpoint"], "provider": "fal", "attempt": k,
                         "image": f"{cfg['run_id']}/images/{gen_id}.png", "seed": out.get("seed"),
+                        "usd_per_image": m["usd_per_image"], "price_basis": m.get("price_basis", "list price"),
                         "created": __import__("datetime").datetime.now().isoformat(timespec="seconds")}
         print(f"ok   {m['label']} {p['id']} #{k} -> {gen_id}")
     order = list(rows.values())

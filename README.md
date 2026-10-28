@@ -67,17 +67,44 @@ The Hebrew track runs as its own round: `tgb-he-00` once per model, then `tgb-he
 
 ## Grading
 
-Human, per generation, in the private annotation Space ([`space/`](space/)). The model name stays hidden until the annotation is saved.
+Human, per generation, in the private annotation Space ([`space/`](space/)). The model name stays hidden until the annotation is saved. The per-image cost is shown up front, because value for money can't be rated without it; on a small panel the price can hint at the model, which is accepted.
+
+The form has three sections, in this order.
+
+**1. Validation** (hard, pass/fail)
 
 | Field | Type | Meaning |
 |---|---|---|
 | `text_exact` | tick | Every `expected_text` string present and spelled exactly; no invented text. **The hard criterion** |
 | `structure_ok` | tick | Every `structure_checks` item honoured: arrows, order, placement |
 | `meaning_preserved` | tick | A reader would take the same meaning from it as from the brief or the original sketch |
+
+**2. Comments**
+
+| Field | Type | Meaning |
+|---|---|---|
 | `text_errors` | text | Each error verbatim, `expected → got` |
 | `notes` | text | Subjective: what I liked or disliked about the generation |
 
-Per model and modality, report the share of generations passing `text_exact`, and the share passing all three ticks. The notes are quoted, not scored.
+**3. Ratings** (1–10, optional each; `null` when skipped)
+
+| Field | Meaning |
+|---|---|
+| `rating_text` | Text quality as a gradient: how close a failing image came, how legible a passing one is, nothing invented |
+| `rating_layout` | Instruction following on arrows, order and placement, beyond the pass/fail tick |
+| `rating_style` | Delivers the asked-for look (anime, manga, crayon, flat colour) and is fun to look at |
+| `rating_overall` | Would I publish it as the post's banner or explainer, as is |
+| `rating_value` | Value for money: the image judged against its `usd_per_image` |
+
+Each annotation also stores the generation's `usd_per_image` (list price from the round config, recorded per manifest row by `scripts/run_t2i.py`).
+
+**Scoring**, per model and modality:
+
+- **Pass rates:** share of generations passing `text_exact`, and share passing all three ticks. These rank the models; ratings break ties and explain.
+- **Mean ratings:** mean of each `rating_*` over the rated generations, with n.
+- **Cost per usable image:** `usd_per_image ÷ share passing all three ticks` (∞ when none pass). The objective counterpart to `rating_value`.
+
+The notes are quoted, not scored.
 
 ## Where things live
 
@@ -89,7 +116,7 @@ Per model and modality, report the share of generations passing `text_exact`, an
 | Annotations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Ratings` (private), one file per generation at `annotations/<run_id>/<gen_id>.json` |
 | Annotation app | HF Space `danielrosehill/Tech-Graphics-Benchmark-Annotate` (private, Gradio) |
 
-A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "created"}`, with `image` relative to the dataset root. Run IDs are `YYYY-MM-DD-<label>`.
+A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "usd_per_image", "price_basis", "created"}`, with `image` relative to the dataset root. `usd_per_image` is the config's list price (backfilled into `2026-10-28-informal` on 2026-10-28); runs without it show "cost not recorded" in the Space. Run IDs are `YYYY-MM-DD-<label>`.
 
 The Space reads all three datasets at startup, so restart it after pushing a run. It needs the secret `HF_TOKEN` (write access to the ratings dataset); the repo IDs can be overridden with the variables `RUNS_REPO`, `PROMPTS_REPO` and `RATINGS_REPO`. Redeploy with `space/deploy.sh`.
 

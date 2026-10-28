@@ -3,7 +3,8 @@
 Reads generations from the public runs dataset, shows each one next to its prompt
 (and input image for image-to-image), and writes one JSON file per annotated
 generation to the private ratings dataset. The model name stays hidden until the
-annotation is saved.
+annotation is saved; the per-image cost (manifest `usd_per_image`) is shown up front so value for
+money can be rated.
 
 Env (Space secrets/variables):
   HF_TOKEN      write access to RATINGS_REPO
@@ -74,36 +75,64 @@ def first_unrated():
     return 0
 
 
+RATINGS = [
+    ("rating_text", "Text: legible, correct, nothing invented"),
+    ("rating_layout", "Layout: arrows, order, placement as asked"),
+    ("rating_style", "Style: the asked-for look, fun to look at"),
+    ("rating_overall", "Overall: would I publish it?"),
+    ("rating_value", "Value for money, given the cost"),
+]
+SCALE = [str(n) for n in range(1, 11)]
+
+
+def cost_line(g):
+    usd = g.get("usd_per_image")
+    if usd is None:
+        return "**Cost:** not recorded for this run"
+    return f"**Cost:** ~${usd:.3f} per image ({g.get('price_basis', 'list price')})"
+
+
 def show(i):
+    blank_ratings = [None] * len(RATINGS)
     if not GENS:
         empty = "No generations yet. Push a run to the runs dataset, then restart the Space."
-        return (None, None, empty, "", False, "", False, False, "", "", gr.update())
+        return (None, gr.update(value=None, visible=False), empty, "", "", False, False, False,
+                *blank_ratings, "", "", gr.update())
     i = int(i)
     g = GENS[i]
     p = PROMPTS.get(g["prompt_id"], {})
     input_img = str(PROMPTS_DIR / p["input_image"]) if p.get("input_image") else None
-    expected = "\n".join(f"- {t}" for t in p.get("expected_text", []))
+    expected = "\n".join(f"- `{t}`" for t in p.get("expected_text", [])) or "- (none: any garbled or invented text fails)"
     checks = "\n".join(f"- {c}" for c in p.get("structure_checks", []))
-    info = (f"**{g['prompt_id']}** · {p.get('modality', '?')} · style: {p.get('style', '?')}\n\n"
-            f"{p.get('prompt', '(prompt not found)')}\n\n**Expected text**\n{expected}\n\n**Structure checks**\n{checks}")
+    info = (f"### Prompt · {g['prompt_id']} · {p.get('modality', '?')} · {p.get('style', '?')}\n\n"
+            f"{p.get('prompt', '(prompt not found)')}\n\n"
+            f"<details><summary><b>Expected text</b></summary>\n\n{expected}\n\n</details>\n\n"
+            f"<details><summary><b>Structure checks</b></summary>\n\n{checks}\n\n</details>")
     a = DONE.get((g["run_id"], g["gen_id"]))
     reveal = f"Model: **{g['model']}**" if a else "Model hidden until saved."
+    in_upd = gr.update(value=input_img, visible=bool(input_img))
     if a:
-        return (g["_image_path"], input_img, info, reveal, a["text_exact"], a["text_errors"],
-                a["structure_ok"], a["meaning_preserved"], a["notes"], "", gr.update())
-    return (g["_image_path"], input_img, info, reveal, False, "", False, False, "", "", gr.update())
+        ratings = [str(a[k]) if a.get(k) else None for k, _ in RATINGS]
+        return (g["_image_path"], in_upd, info, cost_line(g), reveal, a["text_exact"], a["structure_ok"],
+                a["meaning_preserved"], *ratings, a["text_errors"], a["notes"], gr.update())
+    return (g["_image_path"], in_upd, info, cost_line(g), reveal, False, False, False,
+            *blank_ratings, "", "", gr.update())
 
 
-def save(i, text_exact, text_errors, structure_ok, meaning_preserved, notes):
+def save(i, text_exact, structure_ok, meaning_preserved, *rest):
     if not GENS:
-        return "Nothing to save.", gr.update(), ""
+        return "Nothing to save.", gr.update()
+    *ratings, text_errors, notes = rest
     i = int(i)
     g = GENS[i]
     rec = {
         "run_id": g["run_id"], "gen_id": g["gen_id"], "prompt_id": g["prompt_id"], "model": g["model"],
-        "text_exact": bool(text_exact), "text_errors": text_errors.strip(),
-        "structure_ok": bool(structure_ok), "meaning_preserved": bool(meaning_preserved),
-        "notes": notes.strip(), "annotated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "usd_per_image": g.get("usd_per_image"),
+        "text_exact": bool(text_exact), "structure_ok": bool(structure_ok),
+        "meaning_preserved": bool(meaning_preserved),
+        **{k: int(r) if r else None for (k, _), r in zip(RATINGS, ratings)},
+        "text_errors": text_errors.strip(), "notes": notes.strip(),
+        "annotated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     api.upload_file(
         path_or_fileobj=json.dumps(rec, ensure_ascii=False, indent=2).encode(),
@@ -112,8 +141,11 @@ def save(i, text_exact, text_errors, structure_ok, meaning_preserved, notes):
         commit_message=f"Annotate {g['run_id']}/{g['gen_id']}",
     )
     DONE[(g["run_id"], g["gen_id"])] = rec
+    nxt = next((k for k in list(range(i + 1, len(GENS))) + list(range(i))
+                if (GENS[k]["run_id"], GENS[k]["gen_id"]) not in DONE), i)
     choices = [(label(k), k) for k in range(len(GENS))]
-    return f"Saved. Model: **{g['model']}**", gr.update(choices=choices, value=i), ""
+    msg = f"Saved #{i + 1}: that was **{g['model']}**." + ("" if nxt != i else " All generations annotated.")
+    return msg, gr.update(choices=choices, value=nxt)
 
 
 def step(i, delta):
@@ -122,35 +154,53 @@ def step(i, delta):
     return (int(i) + delta) % len(GENS)
 
 
-with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
-    gr.Markdown("# Tech Graphics Benchmark: annotate\nTick what holds, list text errors verbatim, add your notes.")
-    picker = gr.Dropdown(choices=[(label(k), k) for k in range(len(GENS))],
-                         value=first_unrated() if GENS else None, label="Generation")
-    with gr.Row():
-        out_img = gr.Image(label="Generated", type="filepath", height=640)
-        with gr.Column():
-            in_img = gr.Image(label="Input (image-to-image only)", type="filepath", height=300)
-            info = gr.Markdown()
-    reveal = gr.Markdown()
-    with gr.Row():
-        text_exact = gr.Checkbox(label="Text exactly right (no misspelt, missing or invented text)")
-        structure_ok = gr.Checkbox(label="Arrows / layout instructions followed")
-        meaning_preserved = gr.Checkbox(label="Meaning of the diagram preserved")
-    text_errors = gr.Textbox(label="Text errors (one per line: expected → got)", lines=3)
-    notes = gr.Textbox(label="Notes: what you liked or disliked", lines=4)
-    with gr.Row():
-        prev_b = gr.Button("← Prev")
-        save_b = gr.Button("Save", variant="primary")
-        next_b = gr.Button("Next →")
-    status = gr.Markdown()
+CSS = """
+.rating .wrap { flex-wrap: wrap !important; gap: 3px !important; overflow: visible !important; }
+.rating input[type=radio] { display: none !important; }
+.rating label { min-width: 30px !important; padding: 5px 0 !important; justify-content: center !important; }
+.rating label.selected { background: #f59e0b !important; color: white !important; font-weight: 700; }
+"""
 
-    outputs = [out_img, in_img, info, reveal, text_exact, text_errors, structure_ok, meaning_preserved, notes, status, picker]
+with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
+    gr.Markdown("# Tech Graphics Benchmark: annotate\n"
+                "Validate, comment, rate. Saving reveals the model and moves to the next unrated generation.")
+    with gr.Row():
+        prev_b = gr.Button("← Prev", scale=0)
+        picker = gr.Dropdown(choices=[(label(k), k) for k in range(len(GENS))],
+                             value=first_unrated() if GENS else None, show_label=False, scale=4)
+        next_b = gr.Button("Next →", scale=0)
+    with gr.Row():
+        with gr.Column(scale=3):
+            out_img = gr.Image(label="Generated", type="filepath", height=620)
+            cost = gr.Markdown()
+            info = gr.Markdown()
+            in_img = gr.Image(label="Input image", type="filepath", height=300, visible=False)
+        with gr.Column(scale=2):
+            with gr.Group():
+                gr.Markdown("### 1. Validation")
+                text_exact = gr.Checkbox(label="Text exactly right: no misspelt, missing or invented text")
+                structure_ok = gr.Checkbox(label="Arrows and layout instructions followed")
+                meaning_preserved = gr.Checkbox(label="Meaning of the diagram preserved")
+            with gr.Group():
+                gr.Markdown("### 2. Comments")
+                text_errors = gr.Textbox(label="Text errors, one per line: expected → got", lines=3)
+                notes = gr.Textbox(label="Notes: what you liked or disliked", lines=3)
+            with gr.Group():
+                gr.Markdown("### 3. Ratings (1–10)")
+                rating_inputs = [gr.Radio(SCALE, label=lbl, elem_classes="rating") for _, lbl in RATINGS]
+            save_b = gr.Button("Save and next", variant="primary")
+            status = gr.Markdown()
+            reveal = gr.Markdown()
+
+    outputs = [out_img, in_img, info, cost, reveal, text_exact, structure_ok, meaning_preserved,
+               *rating_inputs, text_errors, notes, picker]
     picker.change(show, picker, outputs)
     demo.load(show, picker, outputs)
     prev_b.click(lambda i: step(i, -1), picker, picker)
     next_b.click(lambda i: step(i, 1), picker, picker)
-    save_b.click(save, [picker, text_exact, text_errors, structure_ok, meaning_preserved, notes], [reveal, picker, status])
+    save_b.click(save, [picker, text_exact, structure_ok, meaning_preserved, *rating_inputs, text_errors, notes],
+                 [status, picker])
 
 if __name__ == "__main__":
     # Images live in the HF hub cache (snapshot_download), which Gradio won't serve unless allowed.
-    demo.launch(allowed_paths=[HF_HUB_CACHE])
+    demo.launch(allowed_paths=[HF_HUB_CACHE], css=CSS)
