@@ -76,8 +76,6 @@ def first_unrated():
 
 
 RATINGS = [
-    ("rating_text", "Text: legible, correct, nothing invented"),
-    ("rating_layout", "Layout: arrows, order, placement as asked"),
     ("rating_style", "Style: the asked-for look, fun to look at"),
     ("rating_overall", "Overall: would I publish it?"),
     ("rating_value", "Value for money, given the cost"),
@@ -96,7 +94,7 @@ def show(i):
     blank_ratings = [None] * len(RATINGS)
     if not GENS:
         empty = "No generations yet. Push a run to the runs dataset, then restart the Space."
-        return (None, gr.update(value=None, visible=False), empty, "", "", False, False, False,
+        return (None, gr.update(value=None, visible=False), empty, "", "", False, False, False, False,
                 *blank_ratings, "", "", gr.update())
     i = int(i)
     g = GENS[i]
@@ -113,13 +111,13 @@ def show(i):
     in_upd = gr.update(value=input_img, visible=bool(input_img))
     if a:
         ratings = [str(a[k]) if a.get(k) else None for k, _ in RATINGS]
-        return (g["_image_path"], in_upd, info, cost_line(g), reveal, a["text_exact"], a["structure_ok"],
-                a["meaning_preserved"], *ratings, a["text_errors"], a["notes"], gr.update())
-    return (g["_image_path"], in_upd, info, cost_line(g), reveal, False, False, False,
+        return (g["_image_path"], in_upd, info, cost_line(g), reveal, a["text_exact"], a.get("text_legible", False),
+                a["structure_ok"], a["meaning_preserved"], *ratings, a["text_errors"], a["notes"], gr.update())
+    return (g["_image_path"], in_upd, info, cost_line(g), reveal, False, False, False, False,
             *blank_ratings, "", "", gr.update())
 
 
-def save(i, text_exact, structure_ok, meaning_preserved, *rest):
+def save(i, text_exact, text_legible, structure_ok, meaning_preserved, *rest):
     if not GENS:
         return "Nothing to save.", gr.update()
     *ratings, text_errors, notes = rest
@@ -128,7 +126,7 @@ def save(i, text_exact, structure_ok, meaning_preserved, *rest):
     rec = {
         "run_id": g["run_id"], "gen_id": g["gen_id"], "prompt_id": g["prompt_id"], "model": g["model"],
         "usd_per_image": g.get("usd_per_image"),
-        "text_exact": bool(text_exact), "structure_ok": bool(structure_ok),
+        "text_exact": bool(text_exact), "text_legible": bool(text_legible), "structure_ok": bool(structure_ok),
         "meaning_preserved": bool(meaning_preserved),
         **{k: int(r) if r else None for (k, _), r in zip(RATINGS, ratings)},
         "text_errors": text_errors.strip(), "notes": notes.strip(),
@@ -179,6 +177,7 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
             with gr.Group():
                 gr.Markdown("### 1. Validation")
                 text_exact = gr.Checkbox(label="Text exactly right: no misspelt, missing or invented text")
+                text_legible = gr.Checkbox(label="Text legible at a glance")
                 structure_ok = gr.Checkbox(label="Arrows and layout instructions followed")
                 meaning_preserved = gr.Checkbox(label="Meaning of the diagram preserved")
             with gr.Group():
@@ -192,13 +191,13 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
             status = gr.Markdown()
             reveal = gr.Markdown()
 
-    outputs = [out_img, in_img, info, cost, reveal, text_exact, structure_ok, meaning_preserved,
+    outputs = [out_img, in_img, info, cost, reveal, text_exact, text_legible, structure_ok, meaning_preserved,
                *rating_inputs, text_errors, notes, picker]
     picker.change(show, picker, outputs)
     demo.load(show, picker, outputs)
     prev_b.click(lambda i: step(i, -1), picker, picker)
     next_b.click(lambda i: step(i, 1), picker, picker)
-    save_b.click(save, [picker, text_exact, structure_ok, meaning_preserved, *rating_inputs, text_errors, notes],
+    save_b.click(save, [picker, text_exact, text_legible, structure_ok, meaning_preserved, *rating_inputs, text_errors, notes],
                  [status, picker])
 
 if __name__ == "__main__":

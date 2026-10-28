@@ -76,6 +76,7 @@ The form has three sections, in this order.
 | Field | Type | Meaning |
 |---|---|---|
 | `text_exact` | tick | Every `expected_text` string present and spelled exactly; no invented text. **The hard criterion** |
+| `text_legible` | tick | All text readable at a glance at blog-post size: no smudged, warped or cramped lettering |
 | `structure_ok` | tick | Every `structure_checks` item honoured: arrows, order, placement |
 | `meaning_preserved` | tick | A reader would take the same meaning from it as from the brief or the original sketch |
 
@@ -90,8 +91,6 @@ The form has three sections, in this order.
 
 | Field | Meaning |
 |---|---|
-| `rating_text` | Text quality as a gradient: how close a failing image came, how legible a passing one is, nothing invented |
-| `rating_layout` | Instruction following on arrows, order and placement, beyond the pass/fail tick |
 | `rating_style` | Delivers the asked-for look (anime, manga, crayon, flat colour) and is fun to look at |
 | `rating_overall` | Would I publish it as the post's banner or explainer, as is |
 | `rating_value` | Value for money: the image judged against its `usd_per_image` |
@@ -100,9 +99,9 @@ Each annotation also stores the generation's `usd_per_image` (list price from th
 
 **Scoring**, per model and modality:
 
-- **Pass rates:** share of generations passing `text_exact`, and share passing all three ticks. These rank the models; ratings break ties and explain.
+- **Pass rates:** share of generations passing `text_exact`, and share passing all four ticks. These rank the models; ratings break ties and explain.
 - **Mean ratings:** mean of each `rating_*` over the rated generations, with n.
-- **Cost per usable image:** `usd_per_image ÷ share passing all three ticks` (∞ when none pass). The objective counterpart to `rating_value`.
+- **Cost per usable image:** `usd_per_image ÷ share passing all four ticks` (∞ when none pass). The objective counterpart to `rating_value`.
 
 The notes are quoted, not scored.
 
