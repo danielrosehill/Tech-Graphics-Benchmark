@@ -1,8 +1,8 @@
-"""Informal text-to-image round on fal: every prompt x model x N generations, saved for annotation.
+"""Informal round on fal (text-to-image or image-to-image): every prompt x model x N generations, saved for annotation.
 
 Usage:
-  with-secrets uv run python scripts/run_t2i.py configs/<run_id>.json           # generate
-  with-secrets uv run python scripts/run_t2i.py configs/<run_id>.json --dry-run # plan and cost only
+  with-secrets uv run python scripts/run_round.py configs/<run_id>.json           # generate
+  with-secrets uv run python scripts/run_round.py configs/<run_id>.json --dry-run # plan and cost only
 
 Writes runs/<run_id>/manifest.jsonl, images/<gen_id>.png and spend.json. Resumable: a gen_id
 whose image already exists is skipped. gen_ids are opaque hashes and the manifest is shuffled,
@@ -10,6 +10,10 @@ so the annotation Space doesn't reveal the model before an annotation is saved.
 
 Calls https://fal.run/<endpoint> (synchronous). Model-specific inputs go in the config's `args`;
 switch off prompt expansion wherever a model has it, or the model rewrites the exact strings.
+Image-to-image: a prompt's input_image (path under data/) is sent as a public URL,
+config input_base_url + input_image, in the model's image_param (default image_urls, a list;
+a param named image_url gets a bare string). One config holds one modality, since each model
+entry names a single endpoint.
 fal responses carry no cost, so spend is the config's usd_per_image (from the model page or
 the pricing API) summed per success; the fal usage dashboard is the check. Each manifest row
 records that price as usd_per_image, which the Space shows so value for money can be rated, and the
@@ -75,8 +79,13 @@ def main():
         img = run / "images" / f"{gen_id}.png"
         if img.exists():
             continue
+        payload = {"prompt": p["prompt"], "num_images": 1, **m.get("args", {})}
+        if p.get("input_image"):
+            url = cfg["input_base_url"] + p["input_image"]
+            param = m.get("image_param", "image_urls")
+            payload[param] = url if param == "image_url" else [url]
         try:
-            out = call(m["endpoint"], {"prompt": p["prompt"], "num_images": 1, **m.get("args", {})})
+            out = call(m["endpoint"], payload)
             urllib.request.urlretrieve(out["images"][0]["url"], img)
         except Exception as e:
             print(f"FAIL {m['label']} {p['id']} #{k}: {e}")
@@ -85,6 +94,7 @@ def main():
         width, height = png_size(img)
         rows[gen_id] = {"gen_id": gen_id, "run_id": cfg["run_id"], "prompt_id": p["id"], "model": m["label"],
                         "endpoint": m["endpoint"], "provider": "fal", "attempt": k,
+                        "input_image": p.get("input_image"),
                         "image": f"{cfg['run_id']}/images/{gen_id}.png", "seed": out.get("seed"),
                         "requested_size": requested_size(m.get("args", {})), "width": width, "height": height,
                         "usd_per_image": m["usd_per_image"], "price_basis": m.get("price_basis", "list price"),

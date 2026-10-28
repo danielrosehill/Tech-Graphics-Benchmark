@@ -1,12 +1,12 @@
 # Tech-Graphics-Benchmark
 
-> **Status: first informal round generated, annotation under way (2026-10-28).** Nine test prompts (six core, three in a Hebrew track), a 15-model longlist on fal, and one text-to-image round of 20 images in the private annotation Space.
+> **Status: second set of rounds generated, annotation under way (2026-10-28).** Fifteen test prompts (seven text-to-image, five image-to-image, three in a Hebrew track; three more retired), a 15-model longlist on fal, and three rounds in the private annotation Space.
 >
 > **Visibility:** repo public · prompts public · generations public · annotations public · annotation Space private
 
 [![Prompts](https://img.shields.io/badge/HF%20dataset-prompts-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark) [![Generations](https://img.shields.io/badge/HF%20dataset-generations-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Runs) [![Annotations](https://img.shields.io/badge/HF%20dataset-annotations%20(raw%20eval%20data)-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Ratings)
 
-Can an image generation model turn a technical explanation into a colourful, stylised diagram (anime, manga, bold flat colour) **without losing the meaning**: every label spelled exactly, every arrow where it was asked for?
+Can an image generation model make the graphics a tech repo or blog post actually uses (a photoreal banner with a sloth at a desk, a mascot in a real street scene, a neon title, a whiteboard sketch restyled as a chalkboard or comic page) **without losing the meaning**: every label spelled exactly, every arrow where it was asked for?
 
 Diagrams-as-code (Mermaid, Graphviz, PlantUML) are accurate, well tooled and dull. Generative image models can bring colour, style and personality to explaining a concept, but text rendering has long been their Achilles heel, and for an explainer diagram one wrong label is fatal. This is a deliberately lightweight, periodic check (one or two prompts per modality) to see which models currently get it right. Models change too fast for an exhaustive comparison to stay useful.
 
@@ -16,7 +16,7 @@ The winners here are not necessarily the most photorealistic or "best" image mod
 
 [![Hugging Face](https://img.shields.io/badge/HuggingFace-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark)
 
-Nine prompts (six core: four text-to-image, two image-to-image; three in the Hebrew track): [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Upload with:
+Fifteen prompts (twelve core: seven text-to-image, five image-to-image; three in the Hebrew track): [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Retired prompts, with the reason, are in [`data/retired.jsonl`](data/retired.jsonl). Upload with:
 
 ```bash
 hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
@@ -24,19 +24,25 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 
 | ID | Modality | What it tests |
 |---|---|---|
-| `tgb-t2i-01` | Text-to-image | Anime-style blog explainer of ASR fine-tuning for domain vocabulary across two models: 11 exact strings including WER figures, two panels, arrows |
-| `tgb-t2i-02` | Text-to-image | Manga-style speech-to-text pipeline: box order, arrow directions, one arrow from a box below the row, a speech bubble with a deliberate tricky string |
 | `tgb-t2i-03` | Text-to-image | Crayon banner for the Hebrish fine-tune post: Boxty (tech) and Jachnun (code-switching) with handwritten WERs, a box of example words, one arrow down to Sabich v2.2 and its WERs, a margin note. 15 exact strings |
 | `tgb-t2i-04` | Text-to-image | Cover art for the same post from a descriptive prompt with **no exact strings**: passes text only if nothing garbled or invented appears |
+| `tgb-t2i-05` | Text-to-image | Photoreal sloth sysadmin in a server closet: monitor progress text, a paper sign on the rack, a printed mug. 3 exact strings |
+| `tgb-t2i-06` | Text-to-image | Photoreal sloth and capybara pair-programming; one terminal line on the laptop screen |
+| `tgb-t2i-07` | Text-to-image | Blocky orange mascot at a Jerusalem bus stop; a two-row LED arrival board (row order, route, destination, minutes). 6 exact strings |
+| `tgb-t2i-08` | Text-to-image | Neon README title banner: two lines with set colours, pixel sloth face above |
+| `tgb-t2i-09` | Text-to-image | Photoreal sloth with a home GPU rig, descriptive, **no text at all** allowed, left third clear for a title |
 | `tgb-i2i-01` | Image-to-image | Whiteboard photo → clean colour diagram, **keeping the handwriting** but making it legible; fix three named misspellings, nothing else |
-| `tgb-i2i-02` | Image-to-image | Same whiteboard → anime infographic with handwriting **replaced by sans-serif type**; layout and arrows unchanged |
+| `tgb-i2i-03` | Image-to-image | Whiteboards #08 (Zoom-prep yes/no flowchart) → green chalkboard. 7 strings |
+| `tgb-i2i-04` | Image-to-image | Whiteboards #11 (personalised-AI idea, bot interview → memory → vector DB) → sticky notes on cork. 16 strings |
+| `tgb-i2i-05` | Image-to-image | Whiteboards #13 (user/bot dialogue workflow) → comic-book page with characters and speech bubbles, no sound-effect words. 11 strings |
+| `tgb-i2i-06` | Image-to-image | Whiteboards #21 (whiteboard → dev spec pipeline) → neon tubes on brick. 15 strings |
 | `tgb-he-00` | Text-to-image, Hebrew | Screen: one box with פירגון and a label below. Gates the rest of the Hebrew track |
 | `tgb-he-01` | Text-to-image, Hebrew | Hebrew-only mirror of `tgb-t2i-02`: right-to-left pipeline, left-pointing arrows, a percentage inside Hebrew text. 8 exact strings |
 | `tgb-he-02` | Text-to-image, mixed | Hebrew and English in the same strings (`יש לי meeting ב-Zoom מחר`), each run keeping its own direction, Hebrew prefixes on English words. 8 exact strings |
 
 Each record carries `track` (`hebrew` for the Hebrew track, absent for core), `expected_text` (every string that must appear, spelled exactly; empty for descriptive prompts), `structure_checks` (the arrow and layout instructions to verify) and optional `notes` (sources for any figures, grading caveats).
 
-Most prompts are banner or hero images for blog posts: the realistic use. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
+Most prompts are banner or hero images for repos and blog posts, modelled on ones the author has actually used (sloth blog heroes in Personal-Site-Blog, the Claude plugin banners): the realistic use. The image-to-image inputs are boards from [danielrosehill/Whiteboards](https://huggingface.co/datasets/danielrosehill/Whiteboards), whose human transcriptions give the exact strings; the styles come from the [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) prompt library, each with a no-added-text rule appended. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
 
 ## Mechanism
 
@@ -45,7 +51,11 @@ Two modalities, graded separately because they fail differently:
 - **Text-to-image.** The model gets a written description of a diagram with exact label strings, numbers and arrow directions. The failure to look for is garbled, misspelt or invented text and arrows that point the wrong way or connect the wrong boxes.
 - **Image-to-image.** The model gets a photo of a hand-drawn whiteboard or notepad sketch and is asked to restyle it: keep the handwriting but make it legible, or swap it for a clean font, add colour, straighten the perspective. The failure to look for is **text transposition errors**: labels the model drops, invents, rewords or "corrects" wrongly while restyling.
 
-Style is part of the ask (anime, manga, flat colour) because the point is a diagram with personality. A correct but plain output passes the hard checks; the notes record whether it was any fun to look at.
+Style is part of the ask (photoreal, crayon, neon, chalkboard, comic) because the point is a graphic with personality. A correct but plain output passes the hard checks; the notes record whether it was any fun to look at.
+
+### Retired prompts
+
+`tgb-t2i-01` (anime ASR explainer), `tgb-t2i-02` (manga STT pipeline) and `tgb-i2i-02` (whiteboard → anime infographic) were retired on 2026-10-28: anime and manga are not styles the author would use for a repo or post. Both annotations saved from the first round were on these prompts and scored `rating_overall` 2/10 while passing every validation tick ("looks like something you'd hang up in a kindergarten instead of put on a tech blog"), so text fidelity alone didn't make them usable. The records are in `data/retired.jsonl`; the annotations stay in the ratings dataset; the Space no longer queues the 18 unannotated generations from them. The Hebrew prompts `tgb-he-01` and `tgb-he-02` had anime and manga style asks too and were restyled to flat colour with a cartoon robot mascot instead, since what they test is the Hebrew text.
 
 ## Hebrew track
 
@@ -57,12 +67,12 @@ Hebrew-specific errors to log in `text_errors`: reversed letter order, mirrored 
 
 ## Rounds
 
-Informal micro-rounds every few months, not a full sweep: **3–5 cheap models × one or two prompts × two tries**, text-to-image unless a round says otherwise. Around 20 images and well under $1 per round; the point is a quick look at whether a newer, cheaper model now gets the text right.
+Informal micro-rounds every few months, not a full sweep: **3–5 cheap models × a few prompts × one or two tries**, one modality per round. Around 20 images and well under $1 per round; the point is a quick look at whether a newer, cheaper model now gets the text right.
 
 1. **Refresh the model list.** `with-secrets uv run python scripts/fal_catalogue.py` snapshots every active fal text-to-image and image-to-image endpoint with its list price into `catalogue/fal-YYYY-MM-DD.jsonl` (577 endpoints on 2026-10-28). Diff against the previous snapshot to see what's new. Token-billed models (GPT Image, Nano Banana Lite, MAI) show a placeholder price of 1 unit or credit; the real cost is on `https://fal.ai/models/<endpoint_id>`.
 2. **Longlist.** [`panels/2026-10.json`](panels/2026-10.json): 15 candidates from $0.005 to $0.08 per 1K image, each with its endpoints and where its price came from. Each round picks a few from it.
 3. **Round config.** `configs/<run_id>.json`: prompts, models, model-specific `args` and a budget. Switch off prompt expansion wherever a model has it (`enable_prompt_expansion: false`), or the model rewrites the exact strings. Input schemas: `https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=<id>`.
-4. **Generate.** `with-secrets uv run python scripts/run_t2i.py configs/<run_id>.json` (`--dry-run` first for the count and cost). Writes `runs/<run_id>/manifest.jsonl` and `images/` (images are not in git), with opaque, shuffled `gen_id`s so the Space stays blind.
+4. **Generate.** `with-secrets uv run python scripts/run_round.py configs/<run_id>.json` (`--dry-run` first for the count and cost). For image-to-image, the config's models are edit endpoints and `input_base_url` points at the prompts dataset (`https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark/resolve/main/`), so upload `data/` before running; each input goes in `image_urls` (override per model with `image_param`, e.g. `image_url` for Ideogram edit). Writes `runs/<run_id>/manifest.jsonl` and `images/` (images are not in git), with opaque, shuffled `gen_id`s so the Space stays blind.
 5. **Publish for annotation.** `hf upload danielrosehill/Tech-Graphics-Benchmark-Runs runs/<run_id> <run_id> --repo-type dataset --exclude spend.json`, then restart the Space.
 
 The Hebrew track runs as its own round: `tgb-he-00` once per model, then `tgb-he-01` and `tgb-he-02` only for models that pass.
@@ -71,7 +81,7 @@ The Hebrew track runs as its own round: `tgb-he-00` once per model, then `tgb-he
 
 Human, per generation, in the private annotation Space ([`space/`](space/)); the saved annotations are public. The model name stays hidden until the annotation is saved. The per-image cost and size are shown up front, because value for money can't be rated without it; on a small panel the price can hint at the model, which is accepted.
 
-The form has three sections, in this order.
+The form has four sections, in this order.
 
 **1. Validation** (hard, pass/fail)
 
@@ -93,11 +103,15 @@ The form has three sections, in this order.
 
 | Field | Meaning |
 |---|---|
-| `rating_style` | Delivers the asked-for look (anime, manga, crayon, flat colour) and is fun to look at |
+| `rating_style` | Delivers the asked-for look (photoreal, crayon, neon, chalkboard, comic) and is fun to look at |
 | `rating_overall` | Would I publish it as the post's banner or explainer, as is |
 | `rating_value` | Value for money: the image judged against its `usd_per_image` |
 
-Each annotation also stores the generation's `width`, `height` and `usd_per_image` (list price from the round config, recorded per manifest row by `scripts/run_t2i.py`).
+**4. Notes on the annotation process** (for Claude)
+
+A free-text box for notes about the rubric rather than the image: a criterion to add, one to change, something that couldn't be graded with the fields available. Saved with the annotation as `process_notes`, or on its own with **Save process note only** as `process-notes/<timestamp>.json` in the ratings dataset (with the `run_id`, `gen_id` and `prompt_id` on screen). They are not scored. When the rubric is next revised, read every non-empty `process_notes` and every `process-notes/*.json`, apply them to the form, this section and `cards/ratings.md`, and say which notes each change answers.
+
+Each annotation also stores the generation's `width`, `height` and `usd_per_image` (list price from the round config, recorded per manifest row by `scripts/run_round.py`).
 
 **Scoring**, per model and modality:
 
@@ -126,7 +140,9 @@ The Space reads all three datasets at startup, so restart it after pushing a run
 
 | Run | Models | Prompts | Images | Cost | Status |
 |---|---|---|---|---|---|
-| `2026-10-28-informal` ([config](configs/2026-10-28-informal.json)) | FLUX.3 Klein, GPT Image 2.5 Flare (medium), Ideogram V4.5 (low), Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-t2i-01`, `tgb-t2i-02` | 20 (2 per model per prompt) | ~$0.52 (list prices) | Generated 2026-10-28, awaiting annotation |
+| `2026-10-28-informal` ([config](configs/2026-10-28-informal.json)) | FLUX.3 Klein, GPT Image 2.5 Flare (medium), Ideogram V4.5 (low), Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-t2i-01`, `tgb-t2i-02` | 20 (2 per model per prompt) | ~$0.52 (list prices) | Prompts retired 2026-10-28 after 2 annotations; the other 18 dropped from the Space queue |
+| `2026-10-28-banners` ([config](configs/2026-10-28-banners.json)) | same five, 16:9 | `tgb-t2i-05` to `tgb-t2i-09` | 25 (1 per model per prompt) | ~$0.66 (list prices) | Generated 2026-10-28, awaiting annotation |
+| `2026-10-28-whiteboards` ([config](configs/2026-10-28-whiteboards.json)) | edit endpoints: FLUX.3 Klein, GPT Image 2.5 Flare (medium), Seedream 5 Flash, Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-i2i-01`, `tgb-i2i-03` to `tgb-i2i-06` | 25 (1 per model per prompt) | ~$0.67 (list prices; GPT edit estimated) | Generated 2026-10-28, awaiting annotation |
 
 ## Open questions
 

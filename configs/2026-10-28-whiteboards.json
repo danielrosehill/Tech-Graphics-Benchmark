@@ -1,0 +1,21 @@
+{
+  "run_id": "2026-10-28-whiteboards",
+  "kind": "informal image-to-image micro-round: whiteboard photos restyled, text kept",
+  "prompts": ["tgb-i2i-01", "tgb-i2i-03", "tgb-i2i-04", "tgb-i2i-05", "tgb-i2i-06"],
+  "generations_per_prompt": 1,
+  "budget_usd": 2.0,
+  "input_base_url": "https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark/resolve/main/",
+  "models": [
+    {"label": "FLUX.3 Klein", "endpoint": "blackforestlabs/flux-3/klein/edit-image", "usd_per_image": 0.009,
+     "args": {"enable_prompt_expansion": false, "output_format": "png"}},
+    {"label": "GPT Image 2.5 Flare", "endpoint": "openai/gpt-image-2.5/flare/edit", "usd_per_image": 0.015,
+     "price_basis": "estimate: list price + input-image tokens",
+     "args": {"quality": "medium", "output_format": "png"}},
+    {"label": "Seedream 5 Flash", "endpoint": "bytedance/seedream/v5/flash/edit", "usd_per_image": 0.027,
+     "args": {"output_format": "png"}},
+    {"label": "Qwen-Image 3", "endpoint": "alibaba/qwen-image-3/edit", "usd_per_image": 0.04,
+     "args": {"enable_prompt_expansion": false, "output_format": "png"}},
+    {"label": "Nano Banana 2.1", "endpoint": "google/nano-banana-2.1/edit", "usd_per_image": 0.044,
+     "args": {"resolution": "1K", "output_format": "png"}}
+  ]
+}

@@ -29,6 +29,9 @@ Layout: `annotations/<run_id>/<gen_id>.json`. `gen_id` matches a row in the runs
 | `rating_style`, `rating_overall`, `rating_value` | int 1–10 or null | Style, would-publish, value for money |
 | `text_errors` | string | One error per line, `expected → got` |
 | `notes` | string | Free-text comments |
+| `process_notes` | string | Notes about the annotation process, not the image: criteria to add or change, things the form couldn't capture. Absent before 2026-10-28 |
 | `annotated_at` | ISO 8601 UTC | When saved |
+
+`process-notes/<YYYYMMDDTHHMMSS>.json` holds process notes saved without an annotation: `{note, run_id, gen_id, prompt_id, written_at}`, the generation being the one on screen when it was written.
 
 Annotations saved before 2026-10-28's form change may lack `text_legible`, `width` and `height`. Grading and scoring: [README § Grading](https://github.com/danielrosehill/Tech-Graphics-Benchmark#grading).
