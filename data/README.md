@@ -23,7 +23,8 @@ Test prompts for [Tech-Graphics-Benchmark](https://github.com/danielrosehill/Tec
 | `style` | The visual style asked for |
 | `prompt` | Exact text sent to the model |
 | `input_image` | Path under `inputs/` for image-to-image, else `null` |
-| `expected_text` | Every string that must appear, spelled exactly. Pass/fail ground truth |
+| `expected_text` | Every string that must appear, spelled exactly. Pass/fail ground truth. Empty for descriptive prompts, where any garbled or invented text fails |
 | `structure_checks` | Arrow, layout and content instructions the grader checks |
+| `notes` | Optional: sources for figures in the prompt, grading caveats |
 
 `inputs/whiteboard-mcp-01.jpg` is from [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) (`whiteboards/030426.jpg`, photographed 2026-04-03).

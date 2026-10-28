@@ -1,6 +1,6 @@
 # Tech-Graphics-Benchmark
 
-> **Status: draft prompts, not yet run (2026-10-28).** Design, four test prompts and a private annotation Space. No generations or results yet.
+> **Status: draft prompts, not yet run (2026-10-28).** Design, six test prompts and a private annotation Space. No generations or results yet.
 >
 > **Visibility:** repo public · prompts public · runs none · ratings private
 
@@ -14,7 +14,7 @@ The winners here are not necessarily the most photorealistic or "best" image mod
 
 [![Hugging Face](https://img.shields.io/badge/HuggingFace-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark)
 
-Four prompts, two per modality: [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Upload with:
+Six prompts (four text-to-image, two image-to-image): [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Upload with:
 
 ```bash
 hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
@@ -24,10 +24,14 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 |---|---|---|
 | `tgb-t2i-01` | Text-to-image | Anime-style blog explainer of ASR fine-tuning for domain vocabulary across two models: 11 exact strings including WER figures, two panels, arrows |
 | `tgb-t2i-02` | Text-to-image | Manga-style speech-to-text pipeline: box order, arrow directions, one arrow from a box below the row, a speech bubble with a deliberate tricky string |
+| `tgb-t2i-03` | Text-to-image | Crayon banner for the Hebrish fine-tune post: Boxty (tech) and Jachnun (code-switching) with handwritten WERs, a box of example words, one arrow down to Sabich v2.2 and its WERs, a margin note. 15 exact strings |
+| `tgb-t2i-04` | Text-to-image | Cover art for the same post from a descriptive prompt with **no exact strings**: passes text only if nothing garbled or invented appears |
 | `tgb-i2i-01` | Image-to-image | Whiteboard photo → clean colour diagram, **keeping the handwriting** but making it legible; fix three named misspellings, nothing else |
 | `tgb-i2i-02` | Image-to-image | Same whiteboard → anime infographic with handwriting **replaced by sans-serif type**; layout and arrows unchanged |
 
-Each record carries `expected_text` (every string that must appear, spelled exactly) and `structure_checks` (the arrow and layout instructions to verify).
+Each record carries `expected_text` (every string that must appear, spelled exactly; empty for descriptive prompts), `structure_checks` (the arrow and layout instructions to verify) and optional `notes` (sources for any figures, grading caveats).
+
+Most prompts are banner or hero images for blog posts: the realistic use. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
 
 ## Mechanism
 
