@@ -91,6 +91,21 @@ def first_unrated():
     return 0
 
 
+# A prompt's `validation` lists the checks that apply to it; the others are hidden and saved as null
+# (not applicable), so a prompt that asks for no text or diagram isn't failed on them. Prompts without
+# the field (retired ones) get all four.
+CHECKS = [
+    ("text_exact", "Text exactly right: no misspelt, missing or invented text"),
+    ("text_legible", "Text legible at a glance"),
+    ("structure_ok", "Arrows and layout instructions followed"),
+    ("meaning_preserved", "Meaning of the diagram preserved"),
+]
+
+
+def applicable(p):
+    return p.get("validation", [k for k, _ in CHECKS])
+
+
 RATINGS = [
     ("rating_style", "Style: the asked-for look, fun to look at"),
     ("rating_overall", "Overall: would I publish it?"),
@@ -116,41 +131,51 @@ def show(i):
     blank_ratings = [None] * len(RATINGS)
     if not GENS:
         empty = "No generations yet. Push a run to the runs dataset, then restart the Space."
-        return (None, gr.update(value=None, visible=False), empty, "", "", False, False, False, False,
-                *blank_ratings, "", "", "", gr.update())
+        return (empty, None, gr.update(value=None, visible=False), "", "", "", "",
+                *[gr.update(value=False) for _ in CHECKS], *blank_ratings, "", "", "", gr.update())
     i = int(i)
     g = GENS[i]
     p = PROMPTS.get(g["prompt_id"], {})
+    applies = applicable(p)
     input_img = str(PROMPTS_DIR / p["input_image"]) if p.get("input_image") else None
-    expected = "\n".join(f"- `{t}`" for t in p.get("expected_text", [])) or "- (none: any garbled or invented text fails)"
-    checks = "\n".join(f"- {c}" for c in p.get("structure_checks", []))
-    info = (f"### Prompt · {g['prompt_id']} · {p.get('modality', '?')} · {p.get('style', '?')}\n\n"
-            f"{p.get('prompt', '(prompt not found)')}\n\n"
-            f"<details><summary><b>Expected text</b></summary>\n\n{expected}\n\n</details>\n\n"
-            f"<details><summary><b>Structure checks</b></summary>\n\n{checks}\n\n</details>")
+    prompt_box = (f"{p.get('prompt', '(prompt not found)')}\n\n"
+                  f"<sub>{g['prompt_id']} · {p.get('modality', '?')} · {p.get('style', '?')}</sub>")
+    parts = []
+    if p.get("expected_text"):
+        parts.append("<details open><summary><b>Expected text</b></summary>\n\n"
+                     + "\n".join(f"- `{t}`" for t in p["expected_text"]) + "\n\n</details>")
+    if p.get("structure_checks"):
+        title = "Structure checks" if "structure_ok" in applies else "What the brief asked for (for the ratings)"
+        parts.append(f"<details><summary><b>{title}</b></summary>\n\n"
+                     + "\n".join(f"- {c}" for c in p["structure_checks"]) + "\n\n</details>")
+    info = "\n\n".join(parts)
+    val_note = ("No validation for this prompt (no text, title or diagram asked for): ratings only." if not applies
+                else "" if len(applies) == len(CHECKS) else
+                "Only the checks that apply to this prompt are shown; the rest are saved as not applicable.")
     a = DONE.get((g["run_id"], g["gen_id"]))
     reveal = f"Model: **{g['model']}**" if a else "Model hidden until saved."
     in_upd = gr.update(value=input_img, visible=bool(input_img))
+    ticks = [gr.update(value=bool(a.get(k)) if a else False, visible=k in applies) for k, _ in CHECKS]
     if a:
         ratings = [str(a[k]) if a.get(k) else None for k, _ in RATINGS]
-        return (g["_image_path"], in_upd, info, cost_line(g), reveal, a["text_exact"], a.get("text_legible", False),
-                a["structure_ok"], a["meaning_preserved"], *ratings, a["text_errors"], a["notes"],
-                a.get("process_notes", ""), gr.update())
-    return (g["_image_path"], in_upd, info, cost_line(g), reveal, False, False, False, False,
-            *blank_ratings, "", "", "", gr.update())
+        return (prompt_box, g["_image_path"], in_upd, info, cost_line(g), reveal, val_note, *ticks, *ratings,
+                a["text_errors"], a["notes"], a.get("process_notes", ""), gr.update())
+    return (prompt_box, g["_image_path"], in_upd, info, cost_line(g), reveal, val_note, *ticks, *blank_ratings,
+            "", "", "", gr.update())
 
 
-def save(i, text_exact, text_legible, structure_ok, meaning_preserved, *rest):
+def save(i, *rest):
     if not GENS:
         return "Nothing to save.", gr.update()
-    *ratings, text_errors, notes, process_notes = rest
+    n = len(CHECKS)
+    ticks, (*ratings, text_errors, notes, process_notes) = rest[:n], rest[n:]
     i = int(i)
     g = GENS[i]
+    applies = applicable(PROMPTS.get(g["prompt_id"], {}))
     rec = {
         "run_id": g["run_id"], "gen_id": g["gen_id"], "prompt_id": g["prompt_id"], "model": g["model"],
         "usd_per_image": g.get("usd_per_image"), "width": g.get("width"), "height": g.get("height"),
-        "text_exact": bool(text_exact), "text_legible": bool(text_legible), "structure_ok": bool(structure_ok),
-        "meaning_preserved": bool(meaning_preserved),
+        **{k: bool(t) if k in applies else None for (k, _), t in zip(CHECKS, ticks)},
         **{k: int(r) if r else None for (k, _), r in zip(RATINGS, ratings)},
         "text_errors": text_errors.strip(), "notes": notes.strip(), "process_notes": process_notes.strip(),
         "annotated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -196,6 +221,8 @@ CSS = """
 .rating input[type=radio] { display: none !important; }
 .rating label { min-width: 30px !important; padding: 5px 0 !important; justify-content: center !important; }
 .rating label.selected { background: #f59e0b !important; color: white !important; font-weight: 700; }
+#prompt-box { font-size: 1.1rem; line-height: 1.55; padding: 14px 18px; border: 1px solid #9ca3af;
+              border-left: 5px solid #f59e0b; border-radius: 6px; background: rgba(245, 158, 11, 0.06); }
 #gen-img img { width: auto !important; height: auto !important; max-width: 100% !important;
                max-height: 100% !important; margin: auto; border: 1px solid #9ca3af !important; }
 """
@@ -208,6 +235,7 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
         picker = gr.Dropdown(choices=[(label(k), k) for k in range(len(GENS))],
                              value=first_unrated() if GENS else None, show_label=False, scale=4)
         next_b = gr.Button("Next →", scale=0)
+    prompt_box = gr.Markdown(elem_id="prompt-box")
     with gr.Row():
         with gr.Column(scale=3):
             out_img = gr.Image(label="Generated", type="filepath", height=620, elem_id="gen-img")
@@ -217,10 +245,8 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
         with gr.Column(scale=2):
             with gr.Group():
                 gr.Markdown("### 1. Validation")
-                text_exact = gr.Checkbox(label="Text exactly right: no misspelt, missing or invented text")
-                text_legible = gr.Checkbox(label="Text legible at a glance")
-                structure_ok = gr.Checkbox(label="Arrows and layout instructions followed")
-                meaning_preserved = gr.Checkbox(label="Meaning of the diagram preserved")
+                val_note = gr.Markdown()
+                tick_inputs = [gr.Checkbox(label=lbl) for _, lbl in CHECKS]
             with gr.Group():
                 gr.Markdown("### 2. Comments")
                 text_errors = gr.Textbox(label="Text errors, one per line: expected → got", lines=3)
@@ -237,14 +263,13 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
             status = gr.Markdown()
             reveal = gr.Markdown()
 
-    outputs = [out_img, in_img, info, cost, reveal, text_exact, text_legible, structure_ok, meaning_preserved,
+    outputs = [prompt_box, out_img, in_img, info, cost, reveal, val_note, *tick_inputs,
                *rating_inputs, text_errors, notes, process_notes, picker]
     picker.change(show, picker, outputs)
     demo.load(show, picker, outputs)
     prev_b.click(lambda i: step(i, -1), picker, picker)
     next_b.click(lambda i: step(i, 1), picker, picker)
-    save_b.click(save, [picker, text_exact, text_legible, structure_ok, meaning_preserved, *rating_inputs, text_errors, notes,
-                        process_notes], [status, picker])
+    save_b.click(save, [picker, *tick_inputs, *rating_inputs, text_errors, notes, process_notes], [status, picker])
     note_b.click(save_process_note, [picker, process_notes], status)
 
 if __name__ == "__main__":

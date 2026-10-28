@@ -22,15 +22,17 @@ Layout: `annotations/<run_id>/<gen_id>.json`. `gen_id` matches a row in the runs
 | `run_id`, `gen_id`, `prompt_id`, `model` | string | Which generation |
 | `usd_per_image` | number | List price of the generation (USD) |
 | `width`, `height` | int | Delivered image size in pixels |
-| `text_exact` | bool | Every expected string present and spelled exactly; no invented text |
-| `text_legible` | bool | All text readable at a glance |
-| `structure_ok` | bool | Arrow, order and placement instructions honoured |
-| `meaning_preserved` | bool | Same meaning as the brief or the original sketch |
+| `text_exact` | bool or null | Every expected string present and spelled exactly; no invented text |
+| `text_legible` | bool or null | All text readable at a glance |
+| `structure_ok` | bool or null | Arrow, order and placement instructions honoured |
+| `meaning_preserved` | bool or null | Same meaning as the brief or the original sketch |
 | `rating_style`, `rating_overall`, `rating_value` | int 1–10 or null | Style, would-publish, value for money |
 | `text_errors` | string | One error per line, `expected → got` |
 | `notes` | string | Free-text comments |
 | `process_notes` | string | Notes about the annotation process, not the image: criteria to add or change, things the form couldn't capture. Absent before 2026-10-28 |
 | `annotated_at` | ISO 8601 UTC | When saved |
+
+A validation field is `null` when it doesn't apply to the prompt (see the prompt's `validation` list): not applicable, not a fail. Annotations saved before 2026-10-28 20:45 UTC have every tick as a bool.
 
 `process-notes/<YYYYMMDDTHHMMSS>.json` holds process notes saved without an annotation: `{note, run_id, gen_id, prompt_id, written_at}`, the generation being the one on screen when it was written.
 

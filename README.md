@@ -25,12 +25,12 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 | ID | Modality | What it tests |
 |---|---|---|
 | `tgb-t2i-03` | Text-to-image | Crayon banner for the Hebrish fine-tune post: Boxty (tech) and Jachnun (code-switching) with handwritten WERs, a box of example words, one arrow down to Sabich v2.2 and its WERs, a margin note. 15 exact strings |
-| `tgb-t2i-04` | Text-to-image | Cover art for the same post from a descriptive prompt with **no exact strings**: passes text only if nothing garbled or invented appears |
+| `tgb-t2i-04` | Text-to-image | Cover art for the same post from a descriptive prompt with **no exact strings**: ratings only, no validation ticks |
 | `tgb-t2i-05` | Text-to-image | Photoreal sloth sysadmin in a server closet: monitor progress text, a paper sign on the rack, a printed mug. 3 exact strings |
 | `tgb-t2i-06` | Text-to-image | Photoreal sloth and capybara pair-programming; one terminal line on the laptop screen |
 | `tgb-t2i-07` | Text-to-image | Blocky orange mascot at a Jerusalem bus stop; a two-row LED arrival board (row order, route, destination, minutes). 6 exact strings |
 | `tgb-t2i-08` | Text-to-image | Neon README title banner: two lines with set colours, pixel sloth face above |
-| `tgb-t2i-09` | Text-to-image | Photoreal sloth with a home GPU rig, descriptive, **no text at all** allowed, left third clear for a title |
+| `tgb-t2i-09` | Text-to-image | Photoreal sloth with a home GPU rig, descriptive, no text asked for, left third clear for a title: ratings only |
 | `tgb-i2i-01` | Image-to-image | Whiteboard photo → clean colour diagram, **keeping the handwriting** but making it legible; fix three named misspellings, nothing else |
 | `tgb-i2i-03` | Image-to-image | Whiteboards #08 (Zoom-prep yes/no flowchart) → green chalkboard. 7 strings |
 | `tgb-i2i-04` | Image-to-image | Whiteboards #11 (personalised-AI idea, bot interview → memory → vector DB) → sticky notes on cork. 16 strings |
@@ -40,7 +40,7 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 | `tgb-he-01` | Text-to-image, Hebrew | Hebrew-only mirror of `tgb-t2i-02`: right-to-left pipeline, left-pointing arrows, a percentage inside Hebrew text. 8 exact strings |
 | `tgb-he-02` | Text-to-image, mixed | Hebrew and English in the same strings (`יש לי meeting ב-Zoom מחר`), each run keeping its own direction, Hebrew prefixes on English words. 8 exact strings |
 
-Each record carries `track` (`hebrew` for the Hebrew track, absent for core), `expected_text` (every string that must appear, spelled exactly; empty for descriptive prompts), `structure_checks` (the arrow and layout instructions to verify) and optional `notes` (sources for any figures, grading caveats).
+Each record carries `track` (`hebrew` for the Hebrew track, absent for core), `expected_text` (every string that must appear, spelled exactly; empty for descriptive prompts), `validation` (which validation ticks apply), `structure_checks` (the arrow and layout instructions to verify) and optional `notes` (sources for any figures, grading caveats).
 
 Most prompts are banner or hero images for repos and blog posts, modelled on ones the author has actually used (sloth blog heroes in Personal-Site-Blog, the Claude plugin banners): the realistic use. The image-to-image inputs are boards from [danielrosehill/Whiteboards](https://huggingface.co/datasets/danielrosehill/Whiteboards), whose human transcriptions give the exact strings; the styles come from the [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) prompt library, each with a no-added-text rule appended. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
 
@@ -83,7 +83,9 @@ Human, per generation, in the private annotation Space ([`space/`](space/)); the
 
 The form has four sections, in this order.
 
-**1. Validation** (hard, pass/fail)
+**1. Validation** (hard, pass/fail; only the ticks in the prompt's `validation` list)
+
+A tick is only asked where the prompt gives it something to check: diagram prompts get all four, banners with exact strings but no diagram get the two text ticks, and descriptive prompts with no text, title or diagram (`tgb-t2i-04`, `tgb-t2i-09`) get none and are judged on the ratings alone. Ticks that don't apply are hidden in the Space and saved as `null` (not applicable), never as a fail.
 
 | Field | Type | Meaning |
 |---|---|---|
@@ -115,9 +117,9 @@ Each annotation also stores the generation's `width`, `height` and `usd_per_imag
 
 **Scoring**, per model and modality:
 
-- **Pass rates:** share of generations passing `text_exact`, and share passing all four ticks. These rank the models; ratings break ties and explain.
+- **Pass rates:** share of generations passing `text_exact`, and share passing every applicable tick, each over the generations where the tick applies (`null` is left out of the denominator; ratings-only prompts don't count). These rank the models; ratings break ties and explain.
 - **Mean ratings:** mean of each `rating_*` over the rated generations, with n.
-- **Cost per usable image:** `usd_per_image ÷ share passing all four ticks` (∞ when none pass). The objective counterpart to `rating_value`.
+- **Cost per usable image:** `usd_per_image ÷ share passing every applicable tick` (∞ when none pass). The objective counterpart to `rating_value`.
 
 The notes are quoted, not scored.
 

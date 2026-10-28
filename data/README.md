@@ -25,6 +25,7 @@ Test prompts for [Tech-Graphics-Benchmark](https://github.com/danielrosehill/Tec
 | `prompt` | Exact text sent to the model |
 | `input_image` | Path under `inputs/` for image-to-image, else `null` |
 | `expected_text` | Every string that must appear, spelled exactly. Pass/fail ground truth. Empty for descriptive prompts, where any garbled or invented text fails |
+| `validation` | Which validation ticks apply: any of `text_exact`, `text_legible`, `structure_ok`, `meaning_preserved`. Diagram prompts get all four; banners with exact strings but no diagram get the two text ticks; descriptive prompts with no text, title or diagram get none (ratings only). Added 2026-10-28 |
 | `structure_checks` | Arrow, layout and content instructions the grader checks |
 | `notes` | Optional: sources for figures in the prompt, grading caveats |
 
