@@ -1,6 +1,6 @@
 # Tech-Graphics-Benchmark
 
-> **Status: second set of rounds generated, annotation under way (2026-10-28).** Fifteen test prompts (seven text-to-image, five image-to-image, three in a Hebrew track; three more retired), a 15-model longlist on fal, and three rounds in the private annotation Space.
+> **Status: second set of rounds generated, annotation under way (2026-10-28).** Eighteen test prompts (ten text-to-image, five image-to-image, three in a Hebrew track; five more retired), a 15-model longlist on fal, and four rounds in the private annotation Space.
 >
 > **Visibility:** repo public · prompts public · generations public · annotations public · annotation Space private
 
@@ -16,7 +16,7 @@ The winners here are not necessarily the most photorealistic or "best" image mod
 
 [![Hugging Face](https://img.shields.io/badge/HuggingFace-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark)
 
-Fifteen prompts (twelve core: seven text-to-image, five image-to-image; three in the Hebrew track): [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Retired prompts, with the reason, are in [`data/retired.jsonl`](data/retired.jsonl). Upload with:
+Eighteen prompts (fifteen core: ten text-to-image, five image-to-image; three in the Hebrew track): [huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark). The source of truth is [`data/prompts.jsonl`](data/prompts.jsonl), and [`data/README.md`](data/README.md) is the dataset card. Retired prompts, with the reason, are in [`data/retired.jsonl`](data/retired.jsonl). Upload with:
 
 ```bash
 hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
@@ -25,12 +25,15 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 | ID | Modality | What it tests |
 |---|---|---|
 | `tgb-t2i-03` | Text-to-image | Crayon banner for the Hebrish fine-tune post: Boxty (tech) and Jachnun (code-switching) with handwritten WERs, a box of example words, one arrow down to Sabich v2.2 and its WERs, a margin note. 15 exact strings |
-| `tgb-t2i-04` | Text-to-image | Cover art for the same post from a descriptive prompt with **no exact strings**: ratings only, no validation ticks |
 | `tgb-t2i-05` | Text-to-image | Photoreal sloth sysadmin in a server closet: monitor progress text, a paper sign on the rack, a printed mug. 3 exact strings |
 | `tgb-t2i-06` | Text-to-image | Photoreal sloth and capybara pair-programming; one terminal line on the laptop screen |
 | `tgb-t2i-07` | Text-to-image | Blocky orange mascot at a Jerusalem bus stop; a two-row LED arrival board (row order, route, destination, minutes). 6 exact strings |
 | `tgb-t2i-08` | Text-to-image | Neon README title banner: two lines with set colours, pixel sloth face above |
-| `tgb-t2i-09` | Text-to-image | Photoreal sloth with a home GPU rig, descriptive, no text asked for, left third clear for a title: ratings only |
+| `tgb-t2i-10` | Text-to-image | Editorial model-lineage diagram: one base, two rows of training ingredients, two coloured output badges. 11 strings |
+| `tgb-t2i-11` | Text-to-image | Editorial share card: serif title, subtitle, STOCK vs FINE-TUNED rows, the stock row a deliberate mis-transcription that must not be "fixed" |
+| `tgb-t2i-12` | Text-to-image | Information table: 4 columns × 3 rows of model names and WERs, header and highlighted row; every cell in its place. 18 strings |
+| `tgb-t2i-13` | Text-to-image | Five-step numbered infographic, voice note → blog post: labels, captions, icons, right-pointing arrows |
+| `tgb-t2i-14` | Text-to-image | Horizontal bar chart: five labelled bars in order, lengths proportional, values at bar ends, axis label |
 | `tgb-i2i-01` | Image-to-image | Whiteboard photo → clean colour diagram, **keeping the handwriting** but making it legible; fix three named misspellings, nothing else |
 | `tgb-i2i-03` | Image-to-image | Whiteboards #08 (Zoom-prep yes/no flowchart) → green chalkboard. 7 strings |
 | `tgb-i2i-04` | Image-to-image | Whiteboards #11 (personalised-AI idea, bot interview → memory → vector DB) → sticky notes on cork. 16 strings |
@@ -42,7 +45,7 @@ hf upload danielrosehill/Tech-Graphics-Benchmark data . --repo-type dataset
 
 Each record carries `track` (`hebrew` for the Hebrew track, absent for core), `expected_text` (every string that must appear, spelled exactly; empty for descriptive prompts), `validation` (which validation ticks apply), `structure_checks` (the arrow and layout instructions to verify) and optional `notes` (sources for any figures, grading caveats).
 
-Most prompts are banner or hero images for repos and blog posts, modelled on ones the author has actually used (sloth blog heroes in Personal-Site-Blog, the Claude plugin banners): the realistic use. The image-to-image inputs are boards from [danielrosehill/Whiteboards](https://huggingface.co/datasets/danielrosehill/Whiteboards), whose human transcriptions give the exact strings; the styles come from the [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) prompt library, each with a no-added-text rule appended. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
+Two families of text-to-image prompt, both modelled on graphics the author actually publishes. **Banners** (`tgb-t2i-03`, `-05` to `-08`): repo and post hero images, modelled on ones the author has actually used (sloth blog heroes in Personal-Site-Blog, the Claude plugin banners): the realistic use. The image-to-image inputs are boards from [danielrosehill/Whiteboards](https://huggingface.co/datasets/danielrosehill/Whiteboards), whose human transcriptions give the exact strings. **Informational graphics** (`tgb-t2i-10` to `-14`): the lineage diagrams, share cards, tables, step infographics and charts on [blog.danielrosehill.com](https://blog.danielrosehill.com), in its calm editorial style (cream background, teal, amber and slate). Every prompt asks for some exact text, so every one can be validated; the styles come from the [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) prompt library, each with a no-added-text rule appended. Two prompt shapes: **exact** (every label, number and arrow specified) and **descriptive** (what the image should convey, no strings), since cover art is usually asked for the second way.
 
 ## Mechanism
 
@@ -55,7 +58,7 @@ Style is part of the ask (photoreal, crayon, neon, chalkboard, comic) because th
 
 ### Retired prompts
 
-`tgb-t2i-01` (anime ASR explainer), `tgb-t2i-02` (manga STT pipeline) and `tgb-i2i-02` (whiteboard → anime infographic) were retired on 2026-10-28: anime and manga are not styles the author would use for a repo or post. Both annotations saved from the first round were on these prompts and scored `rating_overall` 2/10 while passing every validation tick ("looks like something you'd hang up in a kindergarten instead of put on a tech blog"), so text fidelity alone didn't make them usable. The records are in `data/retired.jsonl`; the annotations stay in the ratings dataset; the Space no longer queues the 18 unannotated generations from them. The Hebrew prompts `tgb-he-01` and `tgb-he-02` had anime and manga style asks too and were restyled to flat colour with a cartoon robot mascot instead, since what they test is the Hebrew text.
+`tgb-t2i-01` (anime ASR explainer), `tgb-t2i-02` (manga STT pipeline) and `tgb-i2i-02` (whiteboard → anime infographic) were retired on 2026-10-28: anime and manga are not styles the author would use for a repo or post. Both annotations saved from the first round were on these prompts and scored `rating_overall` 2/10 while passing every validation tick ("looks like something you'd hang up in a kindergarten instead of put on a tech blog"), so text fidelity alone didn't make them usable. The records are in `data/retired.jsonl`; the annotations stay in the ratings dataset; the Space no longer queues the 18 unannotated generations from them. `tgb-t2i-04` (cover art) and `tgb-t2i-09` (sloth with a GPU rig) followed later the same day: descriptive prompts asking for no text, title or diagram give nothing to validate, so they don't belong here. The Hebrew prompts `tgb-he-01` and `tgb-he-02` had anime and manga style asks too and were restyled to flat colour with a cartoon robot mascot instead, since what they test is the Hebrew text.
 
 ## Hebrew track
 
@@ -85,7 +88,7 @@ The form has four sections, in this order.
 
 **1. Validation** (hard, pass/fail; only the ticks in the prompt's `validation` list)
 
-A tick is only asked where the prompt gives it something to check: diagram prompts get all four, banners with exact strings but no diagram get the two text ticks, and descriptive prompts with no text, title or diagram (`tgb-t2i-04`, `tgb-t2i-09`) get none and are judged on the ratings alone. Ticks that don't apply are hidden in the Space and saved as `null` (not applicable), never as a fail.
+A tick is only asked where the prompt gives it something to check: diagram prompts get all four, banners with exact strings but no diagram get the two text ticks, and a prompt with no text, title or diagram would get none (none are active: such prompts are retired rather than rated). Ticks that don't apply are hidden in the Space and saved as `null` (not applicable), never as a fail.
 
 | Field | Type | Meaning |
 |---|---|---|
@@ -143,7 +146,8 @@ The Space reads all three datasets at startup, so restart it after pushing a run
 | Run | Models | Prompts | Images | Cost | Status |
 |---|---|---|---|---|---|
 | `2026-10-28-informal` ([config](configs/2026-10-28-informal.json)) | FLUX.3 Klein, GPT Image 2.5 Flare (medium), Ideogram V4.5 (low), Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-t2i-01`, `tgb-t2i-02` | 20 (2 per model per prompt) | ~$0.52 (list prices) | Prompts retired 2026-10-28 after 2 annotations; the other 18 dropped from the Space queue |
-| `2026-10-28-banners` ([config](configs/2026-10-28-banners.json)) | same five, 16:9 | `tgb-t2i-05` to `tgb-t2i-09` | 25 (1 per model per prompt) | ~$0.66 (list prices) | Generated 2026-10-28, awaiting annotation |
+| `2026-10-28-banners` ([config](configs/2026-10-28-banners.json)) | same five, 16:9 | `tgb-t2i-05` to `tgb-t2i-09` | 25 (1 per model per prompt) | ~$0.66 (list prices) | Annotation under way; `tgb-t2i-09` retired mid-round, its 4 unannotated images dropped from the queue |
+| `2026-10-28-informational` ([config](configs/2026-10-28-informational.json)) | same five as banners, 16:9 | `tgb-t2i-10` to `tgb-t2i-14` | 25 (1 per model per prompt) | ~$0.66 (list prices) | Generated 2026-10-28, awaiting annotation |
 | `2026-10-28-whiteboards` ([config](configs/2026-10-28-whiteboards.json)) | edit endpoints: FLUX.3 Klein, GPT Image 2.5 Flare (medium), Seedream 5 Flash, Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-i2i-01`, `tgb-i2i-03` to `tgb-i2i-06` | 25 (1 per model per prompt) | ~$0.67 (list prices; GPT edit estimated) | Generated 2026-10-28, awaiting annotation |
 
 ## Open questions

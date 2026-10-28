@@ -31,6 +31,6 @@ Test prompts for [Tech-Graphics-Benchmark](https://github.com/danielrosehill/Tec
 
 `inputs/whiteboards-08.jpg`, `-11`, `-13` and `-21` are samples 08, 11, 13 and 21 of [danielrosehill/Whiteboards](https://huggingface.co/datasets/danielrosehill/Whiteboards) (4096×3072 WebP, converted to 2048×1536 JPEG); their `expected_text` comes from that dataset's human transcriptions. Image-to-image rounds send them to the model by this dataset's `resolve/main/inputs/...` URL.
 
-`retired.jsonl` holds prompts dropped on 2026-10-28 (`tgb-t2i-01`, `tgb-t2i-02`, `tgb-i2i-02`: anime and manga style asks that didn't match real use), each with a `retired` field giving the reason. Annotations already made on them stay in the ratings dataset.
+`retired.jsonl` holds prompts dropped on 2026-10-28, each with a `retired` field giving the reason: `tgb-t2i-01`, `tgb-t2i-02` and `tgb-i2i-02` (anime and manga style asks that didn't match real use), and `tgb-t2i-04` and `tgb-t2i-09` (descriptive prompts with nothing to validate). Annotations already made on them stay in the ratings dataset.
 
 `inputs/whiteboard-mcp-01.jpg` is from [Sample-Whiteboards](https://github.com/danielrosehill/Sample-Whiteboards) (`whiteboards/030426.jpg`, photographed 2026-04-03).

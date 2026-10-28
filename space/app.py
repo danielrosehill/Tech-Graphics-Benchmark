@@ -224,23 +224,27 @@ CSS = """
 #prompt-box { font-size: 1.1rem; line-height: 1.55; padding: 14px 18px; border: 1px solid #9ca3af;
               border-left: 5px solid #f59e0b; border-radius: 6px; background: rgba(245, 158, 11, 0.06); }
 #gen-img img { width: auto !important; height: auto !important; max-width: 100% !important;
-               max-height: 100% !important; margin: auto; border: 1px solid #9ca3af !important; }
+               max-height: 64vh !important; margin: auto; border: 1px solid #9ca3af !important; }
+#gen-img, #gen-img > div { height: auto !important; min-height: 0 !important; }
 """
 
 with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
-    gr.Markdown("# Tech Graphics Benchmark: annotate\n"
-                "Validate, comment, rate. Saving reveals the model and moves to the next unrated generation.")
-    with gr.Row():
+    # Save sits in the top bar as well as under the form, so a small window needn't scroll to save.
+    with gr.Row(equal_height=True):
         prev_b = gr.Button("← Prev", scale=0)
         picker = gr.Dropdown(choices=[(label(k), k) for k in range(len(GENS))],
                              value=first_unrated() if GENS else None, show_label=False, scale=4)
         next_b = gr.Button("Next →", scale=0)
-    prompt_box = gr.Markdown(elem_id="prompt-box")
+        save_top = gr.Button("Save and next", variant="primary", scale=1)
+    with gr.Row():
+        status = gr.Markdown()
+        reveal = gr.Markdown()
     with gr.Row():
         with gr.Column(scale=3):
-            out_img = gr.Image(label="Generated", type="filepath", height=620, elem_id="gen-img")
-            cost = gr.Markdown()
+            out_img = gr.Image(label="Generated", type="filepath", elem_id="gen-img")
+            prompt_box = gr.Markdown(elem_id="prompt-box")
             info = gr.Markdown()
+            cost = gr.Markdown()
             in_img = gr.Image(label="Input image", type="filepath", height=300, visible=False)
         with gr.Column(scale=2):
             with gr.Group():
@@ -260,8 +264,6 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
                     label="Criteria to add or change, things you couldn't grade with this form", lines=3)
                 note_b = gr.Button("Save process note only", size="sm")
             save_b = gr.Button("Save and next", variant="primary")
-            status = gr.Markdown()
-            reveal = gr.Markdown()
 
     outputs = [prompt_box, out_img, in_img, info, cost, reveal, val_note, *tick_inputs,
                *rating_inputs, text_errors, notes, process_notes, picker]
@@ -269,9 +271,12 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
     demo.load(show, picker, outputs)
     prev_b.click(lambda i: step(i, -1), picker, picker)
     next_b.click(lambda i: step(i, 1), picker, picker)
-    save_b.click(save, [picker, *tick_inputs, *rating_inputs, text_errors, notes, process_notes], [status, picker])
+    for b in (save_top, save_b):
+        b.click(save, [picker, *tick_inputs, *rating_inputs, text_errors, notes, process_notes], [status, picker])
     note_b.click(save_process_note, [picker, process_notes], status)
 
 if __name__ == "__main__":
     # Images live in the HF hub cache (snapshot_download), which Gradio won't serve unless allowed.
-    demo.launch(allowed_paths=[HF_HUB_CACHE], css=CSS)
+    # SSR off: on 2026-10-28 the Space (Gradio 6.31, SSR via a Node proxy) froze in the browser on save while
+    # the server logged nothing; plain client rendering rules that path out.
+    demo.launch(allowed_paths=[HF_HUB_CACHE], css=CSS, ssr_mode=False)
