@@ -163,6 +163,8 @@ CSS = """
 .rating input[type=radio] { display: none !important; }
 .rating label { min-width: 30px !important; padding: 5px 0 !important; justify-content: center !important; }
 .rating label.selected { background: #f59e0b !important; color: white !important; font-weight: 700; }
+#gen-img img { width: auto !important; height: auto !important; max-width: 100% !important;
+               max-height: 100% !important; margin: auto; border: 1px solid #9ca3af !important; }
 """
 
 with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
@@ -175,7 +177,7 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
         next_b = gr.Button("Next →", scale=0)
     with gr.Row():
         with gr.Column(scale=3):
-            out_img = gr.Image(label="Generated", type="filepath", height=620)
+            out_img = gr.Image(label="Generated", type="filepath", height=620, elem_id="gen-img")
             cost = gr.Markdown()
             info = gr.Markdown()
             in_img = gr.Image(label="Input image", type="filepath", height=300, visible=False)
