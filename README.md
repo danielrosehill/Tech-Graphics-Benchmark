@@ -1,8 +1,10 @@
 # Tech-Graphics-Benchmark
 
-> **Status: first informal round generated, awaiting annotation (2026-10-28).** Nine test prompts (six core, three in a Hebrew track), a 15-model longlist on fal, and one text-to-image round of 20 images in the private annotation Space.
+> **Status: first informal round generated, annotation under way (2026-10-28).** Nine test prompts (six core, three in a Hebrew track), a 15-model longlist on fal, and one text-to-image round of 20 images in the private annotation Space.
 >
-> **Visibility:** repo public · prompts public · runs none · ratings private
+> **Visibility:** repo public · prompts public · generations public · annotations public · annotation Space private
+
+[![Prompts](https://img.shields.io/badge/HF%20dataset-prompts-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark) [![Generations](https://img.shields.io/badge/HF%20dataset-generations-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Runs) [![Annotations](https://img.shields.io/badge/HF%20dataset-annotations%20(raw%20eval%20data)-yellow?logo=huggingface)](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Ratings)
 
 Can an image generation model turn a technical explanation into a colourful, stylised diagram (anime, manga, bold flat colour) **without losing the meaning**: every label spelled exactly, every arrow where it was asked for?
 
@@ -67,7 +69,7 @@ The Hebrew track runs as its own round: `tgb-he-00` once per model, then `tgb-he
 
 ## Grading
 
-Human, per generation, in the private annotation Space ([`space/`](space/)). The model name stays hidden until the annotation is saved. The per-image cost is shown up front, because value for money can't be rated without it; on a small panel the price can hint at the model, which is accepted.
+Human, per generation, in the private annotation Space ([`space/`](space/)); the saved annotations are public. The model name stays hidden until the annotation is saved. The per-image cost and size are shown up front, because value for money can't be rated without it; on a small panel the price can hint at the model, which is accepted.
 
 The form has three sections, in this order.
 
@@ -95,7 +97,7 @@ The form has three sections, in this order.
 | `rating_overall` | Would I publish it as the post's banner or explainer, as is |
 | `rating_value` | Value for money: the image judged against its `usd_per_image` |
 
-Each annotation also stores the generation's `usd_per_image` (list price from the round config, recorded per manifest row by `scripts/run_t2i.py`).
+Each annotation also stores the generation's `width`, `height` and `usd_per_image` (list price from the round config, recorded per manifest row by `scripts/run_t2i.py`).
 
 **Scoring**, per model and modality:
 
@@ -111,11 +113,12 @@ The notes are quoted, not scored.
 |---|---|
 | Design, prompts source, Space source, model panels, fal catalogue snapshots | this repo |
 | Test prompts | HF dataset [`danielrosehill/Tech-Graphics-Benchmark`](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark) (public) |
-| Generations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Runs` (public). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
-| Annotations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Ratings` (private), one file per generation at `annotations/<run_id>/<gen_id>.json` |
-| Annotation app | HF Space `danielrosehill/Tech-Graphics-Benchmark-Annotate` (private, Gradio) |
+| Generations | HF dataset [`danielrosehill/Tech-Graphics-Benchmark-Runs`](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Runs) (public). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
+| Annotations (raw eval data) | HF dataset [`danielrosehill/Tech-Graphics-Benchmark-Ratings`](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark-Ratings) (public since 2026-10-28), one file per generation at `annotations/<run_id>/<gen_id>.json` |
+| Dataset cards for the two HF datasets above | [`cards/runs.md`](cards/runs.md), [`cards/ratings.md`](cards/ratings.md); upload each as `README.md` to its dataset |
+| Annotation app | HF Space [`danielrosehill/Tech-Graphics-Benchmark-Annotate`](https://huggingface.co/spaces/danielrosehill/Tech-Graphics-Benchmark-Annotate) (private, Gradio) |
 
-A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "usd_per_image", "price_basis", "created"}`, with `image` relative to the dataset root. `usd_per_image` is the config's list price (backfilled into `2026-10-28-informal` on 2026-10-28); runs without it show "cost not recorded" in the Space. Run IDs are `YYYY-MM-DD-<label>`.
+A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "created", "requested_size", "width", "height", "usd_per_image", "price_basis"}`, with `image` relative to the dataset root. `requested_size` is what the config asked for (`image_size`, or `aspect_ratio` + `resolution`); `width`/`height` are what came back, read from the PNG. Models given the same request deliver different sizes (2026-10-28: 1024×768, 1152×864, 1200×896), so the Space shows both. `usd_per_image` is the config's list price (backfilled, with the sizes, into `2026-10-28-informal` on 2026-10-28); runs without it show "cost not recorded" in the Space. Run IDs are `YYYY-MM-DD-<label>`.
 
 The Space reads all three datasets at startup, so restart it after pushing a run. It needs the secret `HF_TOKEN` (write access to the ratings dataset); the repo IDs can be overridden with the variables `RUNS_REPO`, `PROMPTS_REPO` and `RATINGS_REPO`. Redeploy with `space/deploy.sh`.
 

@@ -12,7 +12,8 @@ Calls https://fal.run/<endpoint> (synchronous). Model-specific inputs go in the 
 switch off prompt expansion wherever a model has it, or the model rewrites the exact strings.
 fal responses carry no cost, so spend is the config's usd_per_image (from the model page or
 the pricing API) summed per success; the fal usage dashboard is the check. Each manifest row
-records that price as usd_per_image, which the Space shows so value for money can be rated.
+records that price as usd_per_image, which the Space shows so value for money can be rated, and the
+size: requested_size (the config's image_size, or aspect_ratio + resolution) and the delivered width/height.
 """
 import argparse
 import hashlib
@@ -20,6 +21,7 @@ import json
 import os
 import pathlib
 import random
+import struct
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -30,6 +32,21 @@ def call(endpoint, payload):
                                  headers={"Authorization": f"Key {os.environ['FAL_KEY']}",
                                           "Content-Type": "application/json"})
     return json.load(urllib.request.urlopen(req, timeout=600))
+
+
+def png_size(path):
+    """(width, height) from a PNG's IHDR chunk, or (None, None) if it isn't a PNG."""
+    head = path.read_bytes()[:24]
+    if head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None, None
+    return struct.unpack(">II", head[16:24])
+
+
+def requested_size(args):
+    """The size the round asked for, as the model's own parameters spell it."""
+    if "image_size" in args:
+        return str(args["image_size"])
+    return " ".join(str(args[k]) for k in ("aspect_ratio", "resolution") if k in args) or None
 
 
 def main():
@@ -65,9 +82,11 @@ def main():
             print(f"FAIL {m['label']} {p['id']} #{k}: {e}")
             continue
         spend += m["usd_per_image"]
+        width, height = png_size(img)
         rows[gen_id] = {"gen_id": gen_id, "run_id": cfg["run_id"], "prompt_id": p["id"], "model": m["label"],
                         "endpoint": m["endpoint"], "provider": "fal", "attempt": k,
                         "image": f"{cfg['run_id']}/images/{gen_id}.png", "seed": out.get("seed"),
+                        "requested_size": requested_size(m.get("args", {})), "width": width, "height": height,
                         "usd_per_image": m["usd_per_image"], "price_basis": m.get("price_basis", "list price"),
                         "created": __import__("datetime").datetime.now().isoformat(timespec="seconds")}
         print(f"ok   {m['label']} {p['id']} #{k} -> {gen_id}")

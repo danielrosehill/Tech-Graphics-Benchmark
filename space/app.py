@@ -3,7 +3,7 @@
 Reads generations from the public runs dataset, shows each one next to its prompt
 (and input image for image-to-image), and writes one JSON file per annotated
 generation to the private ratings dataset. The model name stays hidden until the
-annotation is saved; the per-image cost (manifest `usd_per_image`) is shown up front so value for
+annotation is saved; the per-image cost (manifest `usd_per_image`) and size are shown up front so value for
 money can be rated.
 
 Env (Space secrets/variables):
@@ -85,9 +85,15 @@ SCALE = [str(n) for n in range(1, 11)]
 
 def cost_line(g):
     usd = g.get("usd_per_image")
-    if usd is None:
-        return "**Cost:** not recorded for this run"
-    return f"**Cost:** ~${usd:.3f} per image ({g.get('price_basis', 'list price')})"
+    cost = (f"**Cost:** ~${usd:.3f} per image ({g.get('price_basis', 'list price')})" if usd is not None
+            else "**Cost:** not recorded for this run")
+    if g.get("width"):
+        size = f"**Size:** {g['width']} × {g['height']} px ({g['width'] * g['height'] / 1e6:.2f} MP)"
+        if g.get("requested_size"):
+            size += f", requested `{g['requested_size']}`"
+    else:
+        size = "**Size:** not recorded for this run"
+    return f"{cost} · {size}"
 
 
 def show(i):
@@ -125,7 +131,7 @@ def save(i, text_exact, text_legible, structure_ok, meaning_preserved, *rest):
     g = GENS[i]
     rec = {
         "run_id": g["run_id"], "gen_id": g["gen_id"], "prompt_id": g["prompt_id"], "model": g["model"],
-        "usd_per_image": g.get("usd_per_image"),
+        "usd_per_image": g.get("usd_per_image"), "width": g.get("width"), "height": g.get("height"),
         "text_exact": bool(text_exact), "text_legible": bool(text_legible), "structure_ok": bool(structure_ok),
         "meaning_preserved": bool(meaning_preserved),
         **{k: int(r) if r else None for (k, _), r in zip(RATINGS, ratings)},
