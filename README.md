@@ -1,6 +1,6 @@
 # Tech-Graphics-Benchmark
 
-> **Status: draft prompts, not yet run (2026-10-28).** Design, nine test prompts (six core, three in a Hebrew track), a candidate model panel on fal and a private annotation Space. No generations or results yet.
+> **Status: first informal round generated, awaiting annotation (2026-10-28).** Nine test prompts (six core, three in a Hebrew track), a 15-model longlist on fal, and one text-to-image round of 20 images in the private annotation Space.
 >
 > **Visibility:** repo public · prompts public · runs none · ratings private
 
@@ -53,15 +53,17 @@ Because most models fail outright ([Hebrew-Image-Generation-Eval](https://github
 
 Hebrew-specific errors to log in `text_errors`: reversed letter order, mirrored glyphs, a non-final letter at the end of a word (מ for ם), pseudo-Hebrew filler, digits flipped by bidi (`2.76%` → `6.72%`), and in mixed strings, English words reversed or the word order scrambled.
 
-## Model panel
+## Rounds
 
-Each round runs a panel of models on [fal](https://fal.ai), **two generations per prompt**. The target is cost-effectiveness, not the frontier: models cheap enough (around $0.05 or less per 1K image) to use for every blog post, plus one incumbent above the band as the bar to beat.
+Informal micro-rounds every few months, not a full sweep: **3–5 cheap models × one or two prompts × two tries**, text-to-image unless a round says otherwise. Around 20 images and well under $1 per round; the point is a quick look at whether a newer, cheaper model now gets the text right.
 
-Current panel: [`panels/2026-10.json`](panels/2026-10.json), 15 models from $0.005 to $0.08 per image: Z-Image Turbo, Recraft V4.1 Flash, FLUX.3 Klein, GPT Image 2.5 Flare (medium), Ernie Image Turbo, Meta Muse Image, Krea 3, Seedream 5 Flash, Ideogram V4.5 (low), Qwen-Image 3, Grok Imagine Image 2.0 (low), Nano Banana 2.1, Nano Banana 2 Lite, MAI Image 2.5, and Nano Banana 2 as the reference. Each entry records the text-to-image and edit endpoints (12 of 15 have an edit endpoint, so they take the image-to-image prompts), the price and where the price came from.
+1. **Refresh the model list.** `with-secrets uv run python scripts/fal_catalogue.py` snapshots every active fal text-to-image and image-to-image endpoint with its list price into `catalogue/fal-YYYY-MM-DD.jsonl` (577 endpoints on 2026-10-28). Diff against the previous snapshot to see what's new. Token-billed models (GPT Image, Nano Banana Lite, MAI) show a placeholder price of 1 unit or credit; the real cost is on `https://fal.ai/models/<endpoint_id>`.
+2. **Longlist.** [`panels/2026-10.json`](panels/2026-10.json): 15 candidates from $0.005 to $0.08 per 1K image, each with its endpoints and where its price came from. Each round picks a few from it.
+3. **Round config.** `configs/<run_id>.json`: prompts, models, model-specific `args` and a budget. Switch off prompt expansion wherever a model has it (`enable_prompt_expansion: false`), or the model rewrites the exact strings. Input schemas: `https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=<id>`.
+4. **Generate.** `with-secrets uv run python scripts/run_t2i.py configs/<run_id>.json` (`--dry-run` first for the count and cost). Writes `runs/<run_id>/manifest.jsonl` and `images/` (images are not in git), with opaque, shuffled `gen_id`s so the Space stays blind.
+5. **Publish for annotation.** `hf upload danielrosehill/Tech-Graphics-Benchmark-Runs runs/<run_id> <run_id> --repo-type dataset --exclude spend.json`, then restart the Space.
 
-Estimated cost of a full round: about **$6.40** (168 core images ≈ $4.97, Hebrew screen ≈ $0.43, Hebrew track ≈ $1.02 if the five most expensive models pass the screen).
-
-**Building the next panel.** `with-secrets uv run python scripts/fal_catalogue.py` snapshots every active fal text-to-image and image-to-image endpoint with its list price into `catalogue/fal-YYYY-MM-DD.jsonl` (577 endpoints on 2026-10-28). Diff it against the previous snapshot to see what is new, then pick by price and typography claims. Token-billed models (GPT Image, Nano Banana Lite, MAI) appear with a placeholder price of 1 unit or credit; their real cost is on the model page, `https://fal.ai/models/<endpoint_id>`.
+The Hebrew track runs as its own round: `tgb-he-00` once per model, then `tgb-he-01` and `tgb-he-02` only for models that pass.
 
 ## Grading
 
@@ -83,17 +85,19 @@ Per model and modality, report the share of generations passing `text_exact`, an
 |---|---|
 | Design, prompts source, Space source, model panels, fal catalogue snapshots | this repo |
 | Test prompts | HF dataset [`danielrosehill/Tech-Graphics-Benchmark`](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark) (public) |
-| Generations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Runs` (public, empty until the first run). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
+| Generations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Runs` (public). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
 | Annotations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Ratings` (private), one file per generation at `annotations/<run_id>/<gen_id>.json` |
 | Annotation app | HF Space `danielrosehill/Tech-Graphics-Benchmark-Annotate` (private, Gradio) |
 
-A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "provider", "image", "created"}`, with `image` relative to the dataset root. Run IDs are `YYYY-MM-DD-<label>`.
+A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "created"}`, with `image` relative to the dataset root. Run IDs are `YYYY-MM-DD-<label>`.
 
 The Space reads all three datasets at startup, so restart it after pushing a run. It needs the secret `HF_TOKEN` (write access to the ratings dataset); the repo IDs can be overridden with the variables `RUNS_REPO`, `PROMPTS_REPO` and `RATINGS_REPO`. Redeploy with `space/deploy.sh`.
 
 ## Results
 
-Not yet run.
+| Run | Models | Prompts | Images | Cost | Status |
+|---|---|---|---|---|---|
+| `2026-10-28-informal` ([config](configs/2026-10-28-informal.json)) | FLUX.3 Klein, GPT Image 2.5 Flare (medium), Ideogram V4.5 (low), Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-t2i-01`, `tgb-t2i-02` | 20 (2 per model per prompt) | ~$0.52 (list prices) | Generated 2026-10-28, awaiting annotation |
 
 ## Open questions
 
