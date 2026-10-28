@@ -1,0 +1,146 @@
+{
+  "panel": "2026-10",
+  "created": "2026-10-28",
+  "provider": "fal",
+  "generations_per_prompt": 2,
+  "price_band": "<= ~$0.05 per 1K image, plus one reference model above it",
+  "prices": "USD per 1024x1024 image, from the fal Platform pricing API or the model page on 2026-10-28; estimates marked. Confirm from the fal usage dashboard after the pilot.",
+  "hebrew_track": "every model gets tgb-he-00 once; only models passing text_exact on it run tgb-he-01 and tgb-he-02",
+  "models": [
+    {
+      "label": "Z-Image Turbo",
+      "t2i": "fal-ai/z-image/turbo",
+      "edit": "fal-ai/z-image/turbo/image-to-image",
+      "usd_t2i": 0.005,
+      "usd_edit": 0.005,
+      "price_basis": "API: $0.005/MP",
+      "notes": "edit endpoint is img2img (strength), not instruction editing"
+    },
+    {
+      "label": "Recraft V4.1 Flash",
+      "t2i": "recraft/v4.1/flash/text-to-image",
+      "edit": null,
+      "usd_t2i": 0.007,
+      "usd_edit": null,
+      "price_basis": "page: $0.007/image",
+      "notes": null
+    },
+    {
+      "label": "FLUX.3 Klein",
+      "t2i": "blackforestlabs/flux-3/klein/text-to-image",
+      "edit": "blackforestlabs/flux-3/klein/edit-image",
+      "usd_t2i": 0.009,
+      "usd_edit": 0.009,
+      "price_basis": "API: $0.009/MP",
+      "notes": "released 2026-10-14"
+    },
+    {
+      "label": "GPT Image 2.5 Flare",
+      "t2i": "openai/gpt-image-2.5/flare/text-to-image",
+      "edit": "openai/gpt-image-2.5/flare/edit",
+      "usd_t2i": 0.01,
+      "usd_edit": 0.015,
+      "price_basis": "page: $0.009 at 1024x768 medium, + prompt tokens; edit adds input-image tokens (estimate)",
+      "notes": "quality=medium"
+    },
+    {
+      "label": "Ernie Image Turbo",
+      "t2i": "fal-ai/ernie-image/turbo",
+      "edit": null,
+      "usd_t2i": 0.01,
+      "usd_edit": null,
+      "price_basis": "API: $0.01/MP",
+      "notes": "tagged multilingual; Hebrew screen is the interesting part"
+    },
+    {
+      "label": "Meta Muse Image",
+      "t2i": "meta/muse-image/text-to-image",
+      "edit": "meta/muse-image/edit",
+      "usd_t2i": 0.01,
+      "usd_edit": 0.01,
+      "price_basis": "API: $0.01/image (not confirmed on page)",
+      "notes": null
+    },
+    {
+      "label": "Krea 3",
+      "t2i": "krea/v3/text-to-image",
+      "edit": "krea/v3/edit",
+      "usd_t2i": 0.025,
+      "usd_edit": 0.025,
+      "price_basis": "API: $0.025/MP",
+      "notes": "released 2026-10-14"
+    },
+    {
+      "label": "Seedream 5 Flash",
+      "t2i": "bytedance/seedream/v5/flash/text-to-image",
+      "edit": "bytedance/seedream/v5/flash/edit",
+      "usd_t2i": 0.027,
+      "usd_edit": 0.027,
+      "price_basis": "API: $0.027/image",
+      "notes": null
+    },
+    {
+      "label": "Ideogram V4.5",
+      "t2i": "ideogram/v4.5",
+      "edit": "ideogram/v4.5/edit",
+      "usd_t2i": 0.03,
+      "usd_edit": 0.03,
+      "price_basis": "page: $0.03/image at Low ($0.008 Very Low, $0.06 Medium)",
+      "notes": "quality=low; typography specialist"
+    },
+    {
+      "label": "Qwen-Image 3",
+      "t2i": "alibaba/qwen-image-3/text-to-image",
+      "edit": "alibaba/qwen-image-3/edit",
+      "usd_t2i": 0.04,
+      "usd_edit": 0.04,
+      "price_basis": "page: $0.04/image at 1K",
+      "notes": null
+    },
+    {
+      "label": "Grok Imagine Image 2.0",
+      "t2i": "xai/grok-imagine-image/v2.0/text-to-image",
+      "edit": "xai/grok-imagine-image/v2.0/edit",
+      "usd_t2i": 0.04,
+      "usd_edit": 0.05,
+      "price_basis": "page: $0.04 low 1K; edit + $0.01/input image",
+      "notes": "quality=low"
+    },
+    {
+      "label": "Nano Banana 2.1",
+      "t2i": "google/nano-banana-2.1",
+      "edit": "google/nano-banana-2.1/edit",
+      "usd_t2i": 0.04,
+      "usd_edit": 0.044,
+      "price_basis": "page: $0.040 at 1K, medium thinking; edit $0.044",
+      "notes": "resolution=1K; released 2026-10-06"
+    },
+    {
+      "label": "Nano Banana 2 Lite",
+      "t2i": "google/nano-banana-2-lite",
+      "edit": null,
+      "usd_t2i": 0.048,
+      "usd_edit": null,
+      "price_basis": "page: $37.50/M image output tokens; ~1,290 tokens per 1K image (estimate)",
+      "notes": "fixed 1K output; no edit endpoint for 2 Lite"
+    },
+    {
+      "label": "MAI Image 2.5",
+      "t2i": "microsoft/mai-image-2.5",
+      "edit": "microsoft/mai-image-2.5/edit",
+      "usd_t2i": 0.048,
+      "usd_edit": 0.05,
+      "price_basis": "page: $0.048128/image before input costs",
+      "notes": null
+    },
+    {
+      "label": "Nano Banana 2 (reference)",
+      "t2i": "fal-ai/nano-banana-2",
+      "edit": "fal-ai/nano-banana-2/edit",
+      "usd_t2i": 0.08,
+      "usd_edit": 0.08,
+      "price_basis": "API/page: $0.08/image at 1K",
+      "notes": "above the price band; the incumbent (Nano-Tech-Diagrams-MCP), kept as the bar to beat"
+    }
+  ]
+}

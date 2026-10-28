@@ -18,8 +18,9 @@ Test prompts for [Tech-Graphics-Benchmark](https://github.com/danielrosehill/Tec
 
 | Field | Meaning |
 |---|---|
-| `id` | `tgb-t2i-NN` (text-to-image) or `tgb-i2i-NN` (image-to-image) |
+| `id` | `tgb-t2i-NN` (text-to-image), `tgb-i2i-NN` (image-to-image) or `tgb-he-NN` (Hebrew track) |
 | `modality` | `text-to-image` or `image-to-image` |
+| `track` | `hebrew` for the Hebrew track (Hebrew and mixed Hebrew/English text; `tgb-he-00` is a screen that gates the other two). Absent for core prompts |
 | `style` | The visual style asked for |
 | `prompt` | Exact text sent to the model |
 | `input_image` | Path under `inputs/` for image-to-image, else `null` |
