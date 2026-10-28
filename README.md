@@ -139,7 +139,7 @@ The notes are quoted, not scored.
 
 A manifest row is `{"gen_id", "run_id", "prompt_id", "model", "endpoint", "provider", "attempt", "image", "seed", "created", "requested_size", "width", "height", "usd_per_image", "price_basis"}`, with `image` relative to the dataset root. `requested_size` is what the config asked for (`image_size`, or `aspect_ratio` + `resolution`); `width`/`height` are what came back, read from the PNG. Models given the same request deliver different sizes (2026-10-28: 1024×768, 1152×864, 1200×896), so the Space shows both. `usd_per_image` is the config's list price (backfilled, with the sizes, into `2026-10-28-informal` on 2026-10-28); runs without it show "cost not recorded" in the Space. Run IDs are `YYYY-MM-DD-<label>`.
 
-The Space reads all three datasets at startup, so restart it after pushing a run. It needs the secret `HF_TOKEN` (write access to the ratings dataset); the repo IDs can be overridden with the variables `RUNS_REPO`, `PROMPTS_REPO` and `RATINGS_REPO`. Redeploy with `space/deploy.sh`.
+The Space reads all three datasets at startup, so restart it after pushing a run. Saving is instant: the annotation is queued and a background thread commits everything pending in one commit (an HF commit took ~30 s on 2026-10-28, which made each save hang). The save message shows how many are still uploading; don't restart or redeploy the Space while that's non-zero, or the queued files are lost. Images are displayed from full-resolution JPEG copies (quality 92, ~7× smaller than the PNGs) made at startup. It needs the secret `HF_TOKEN` (write access to the ratings dataset); the repo IDs can be overridden with the variables `RUNS_REPO`, `PROMPTS_REPO` and `RATINGS_REPO`. Redeploy with `space/deploy.sh`.
 
 ## Results
 

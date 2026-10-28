@@ -11,6 +11,12 @@ the form lacks, something that couldn't be graded, a change to make to the rubri
 annotation record as `process_notes`, or on their own (no annotation needed) as
 process-notes/<timestamp>.json with the generation they were written against.
 
+Speed (2026-10-28): an HF commit takes ~30 s, and the generations are 2-4 MB PNGs. So saving only queues the
+file; a background thread commits everything pending in one commit, retrying on failure, and the form moves
+on at once (the status line shows how many are still uploading; don't restart the Space while it's non-zero).
+Images are shown from full-resolution JPEG copies (quality 92) made in the background at startup; the PNG
+is used until its copy exists.
+
 Env (Space secrets/variables):
   HF_TOKEN      write access to RATINGS_REPO
   RUNS_REPO     default danielrosehill/Tech-Graphics-Benchmark-Runs
@@ -20,11 +26,17 @@ Env (Space secrets/variables):
 
 import json
 import os
+import queue
+import tempfile
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
 import gradio as gr
-from huggingface_hub import HfApi, snapshot_download
+from huggingface_hub import CommitOperationAdd, HfApi, snapshot_download
+from PIL import Image
 from huggingface_hub.constants import HF_HUB_CACHE
 
 TOKEN = os.environ.get("HF_TOKEN")
@@ -33,6 +45,63 @@ PROMPTS_REPO = os.environ.get("PROMPTS_REPO", "danielrosehill/Tech-Graphics-Benc
 RATINGS_REPO = os.environ.get("RATINGS_REPO", "danielrosehill/Tech-Graphics-Benchmark-Ratings")
 
 api = HfApi(token=TOKEN)
+
+PENDING = queue.Queue()  # (path_in_repo, bytes)
+
+
+def uploader():
+    while True:
+        batch = {}
+        path, data = PENDING.get()
+        batch[path] = data
+        while True:
+            try:
+                path, data = PENDING.get_nowait()
+                batch[path] = data
+            except queue.Empty:
+                break
+        ops = [CommitOperationAdd(path_in_repo=k, path_or_fileobj=v) for k, v in batch.items()]
+        try:
+            api.create_commit(RATINGS_REPO, ops, repo_type="dataset",
+                              commit_message=f"Annotate: {len(ops)} file(s)")
+        except Exception as e:
+            print(f"upload failed, retrying in 10 s: {e}", flush=True)
+            for k, v in batch.items():
+                PENDING.put((k, v))
+            time.sleep(10)
+        finally:
+            for _ in batch:
+                PENDING.task_done()
+
+
+threading.Thread(target=uploader, daemon=True).start()
+
+
+def enqueue(path_in_repo, rec):
+    PENDING.put((path_in_repo, json.dumps(rec, ensure_ascii=False, indent=2).encode()))
+
+
+def uploading():
+    n = PENDING.unfinished_tasks
+    return f" · {n} still uploading" if n else ""
+
+
+PREVIEW_DIR = Path(tempfile.gettempdir()) / "tgb-previews"
+PREVIEW_DIR.mkdir(exist_ok=True)
+
+
+def preview(png):
+    out = PREVIEW_DIR / (Path(png).stem + ".jpg")
+    if not out.exists():
+        tmp = out.with_suffix(".part")
+        Image.open(png).convert("RGB").save(tmp, "JPEG", quality=92)
+        tmp.rename(out)
+    return str(out)
+
+
+def shown(g):
+    jpg = PREVIEW_DIR / (Path(g["_image_path"]).stem + ".jpg")
+    return str(jpg) if jpg.exists() else g["_image_path"]
 
 
 def load_all():
@@ -76,6 +145,7 @@ def load_all():
 
 
 PROMPTS_DIR, PROMPTS, GENS, DONE = load_all()
+ThreadPoolExecutor(2).map(preview, [g["_image_path"] for g in GENS])
 
 
 def label(i):
@@ -158,9 +228,9 @@ def show(i):
     ticks = [gr.update(value=bool(a.get(k)) if a else False, visible=k in applies) for k, _ in CHECKS]
     if a:
         ratings = [str(a[k]) if a.get(k) else None for k, _ in RATINGS]
-        return (prompt_box, g["_image_path"], in_upd, info, cost_line(g), reveal, val_note, *ticks, *ratings,
+        return (prompt_box, shown(g), in_upd, info, cost_line(g), reveal, val_note, *ticks, *ratings,
                 a["text_errors"], a["notes"], a.get("process_notes", ""), gr.update())
-    return (prompt_box, g["_image_path"], in_upd, info, cost_line(g), reveal, val_note, *ticks, *blank_ratings,
+    return (prompt_box, shown(g), in_upd, info, cost_line(g), reveal, val_note, *ticks, *blank_ratings,
             "", "", "", gr.update())
 
 
@@ -180,17 +250,13 @@ def save(i, *rest):
         "text_errors": text_errors.strip(), "notes": notes.strip(), "process_notes": process_notes.strip(),
         "annotated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
-    api.upload_file(
-        path_or_fileobj=json.dumps(rec, ensure_ascii=False, indent=2).encode(),
-        path_in_repo=f"annotations/{g['run_id']}/{g['gen_id']}.json",
-        repo_id=RATINGS_REPO, repo_type="dataset",
-        commit_message=f"Annotate {g['run_id']}/{g['gen_id']}",
-    )
+    enqueue(f"annotations/{g['run_id']}/{g['gen_id']}.json", rec)
     DONE[(g["run_id"], g["gen_id"])] = rec
     nxt = next((k for k in list(range(i + 1, len(GENS))) + list(range(i))
                 if (GENS[k]["run_id"], GENS[k]["gen_id"]) not in DONE), i)
     choices = [(label(k), k) for k in range(len(GENS))]
-    msg = f"Saved #{i + 1}: that was **{g['model']}**." + ("" if nxt != i else " All generations annotated.")
+    msg = (f"Saved #{i + 1}: that was **{g['model']}**." + ("" if nxt != i else " All generations annotated.")
+           + uploading())
     return msg, gr.update(choices=choices, value=nxt)
 
 
@@ -202,12 +268,8 @@ def save_process_note(i, process_notes):
     now = datetime.now(timezone.utc)
     rec = {"note": text, "run_id": g.get("run_id"), "gen_id": g.get("gen_id"), "prompt_id": g.get("prompt_id"),
            "written_at": now.isoformat(timespec="seconds")}
-    api.upload_file(
-        path_or_fileobj=json.dumps(rec, ensure_ascii=False, indent=2).encode(),
-        path_in_repo=f"process-notes/{now.strftime('%Y%m%dT%H%M%S')}.json",
-        repo_id=RATINGS_REPO, repo_type="dataset", commit_message="Process note",
-    )
-    return "Process note saved (no annotation saved)."
+    enqueue(f"process-notes/{now.strftime('%Y%m%dT%H%M%S')}.json", rec)
+    return "Process note saved (no annotation saved)." + uploading()
 
 
 def step(i, delta):
@@ -279,4 +341,4 @@ if __name__ == "__main__":
     # Images live in the HF hub cache (snapshot_download), which Gradio won't serve unless allowed.
     # SSR off: on 2026-10-28 the Space (Gradio 6.31, SSR via a Node proxy) froze in the browser on save while
     # the server logged nothing; plain client rendering rules that path out.
-    demo.launch(allowed_paths=[HF_HUB_CACHE], css=CSS, ssr_mode=False)
+    demo.launch(allowed_paths=[HF_HUB_CACHE, str(PREVIEW_DIR)], css=CSS, ssr_mode=False)
