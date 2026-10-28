@@ -19,6 +19,7 @@ from pathlib import Path
 
 import gradio as gr
 from huggingface_hub import HfApi, snapshot_download
+from huggingface_hub.constants import HF_HUB_CACHE
 
 TOKEN = os.environ.get("HF_TOKEN")
 RUNS_REPO = os.environ.get("RUNS_REPO", "danielrosehill/Tech-Graphics-Benchmark-Runs")
@@ -151,4 +152,5 @@ with gr.Blocks(title="Tech Graphics Benchmark: annotate") as demo:
     save_b.click(save, [picker, text_exact, text_errors, structure_ok, meaning_preserved, notes], [reveal, picker, status])
 
 if __name__ == "__main__":
-    demo.launch()
+    # Images live in the HF hub cache (snapshot_download), which Gradio won't serve unless allowed.
+    demo.launch(allowed_paths=[HF_HUB_CACHE])
