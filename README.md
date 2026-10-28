@@ -58,7 +58,7 @@ Per model and modality, report the share of generations passing `text_exact`, an
 |---|---|
 | Design, prompts source, Space source | this repo |
 | Test prompts | HF dataset [`danielrosehill/Tech-Graphics-Benchmark`](https://huggingface.co/datasets/danielrosehill/Tech-Graphics-Benchmark) (public) |
-| Generations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Runs` (public; created with the first run). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
+| Generations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Runs` (public, empty until the first run). Layout: `<run_id>/manifest.jsonl` + `<run_id>/images/<gen_id>.png` |
 | Annotations | HF dataset `danielrosehill/Tech-Graphics-Benchmark-Ratings` (private), one file per generation at `annotations/<run_id>/<gen_id>.json` |
 | Annotation app | HF Space `danielrosehill/Tech-Graphics-Benchmark-Annotate` (private, Gradio) |
 

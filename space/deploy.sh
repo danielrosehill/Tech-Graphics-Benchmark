@@ -4,4 +4,4 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 hf upload danielrosehill/Tech-Graphics-Benchmark-Annotate . . --repo-type space \
-  --include app.py requirements.txt README.md --commit-message "Deploy annotation app"
+  --include app.py --include requirements.txt --include README.md --commit-message "Deploy annotation app"
