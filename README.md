@@ -1,5 +1,7 @@
 # Tech-Graphics-Benchmark
 
+**Write-up:** [Can image models spell the labels? A first look at my Tech Graphics Benchmark](https://blog.danielrosehill.com/posts/tech-graphics-benchmark-image-models-exact-text-first-look-i1f860/)
+
 > **Status: second set of rounds generated, annotation under way (2026-10-28).** Eighteen test prompts (ten text-to-image, five image-to-image, three in a Hebrew track; five more retired), a 15-model longlist on fal, and four rounds in the private annotation Space.
 >
 > **Visibility:** repo public · prompts public · generations public · annotations public · annotation Space private
