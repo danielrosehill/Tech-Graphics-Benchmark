@@ -152,6 +152,21 @@ The Space reads all three datasets at startup, so restart it after pushing a run
 | `2026-10-28-informational` ([config](configs/2026-10-28-informational.json)) | same five as banners, 16:9 | `tgb-t2i-10` to `tgb-t2i-14` | 25 (1 per model per prompt) | ~$0.66 (list prices) | Generated 2026-10-28, awaiting annotation |
 | `2026-10-28-whiteboards` ([config](configs/2026-10-28-whiteboards.json)) | edit endpoints: FLUX.3 Klein, GPT Image 2.5 Flare (medium), Seedream 5 Flash, Qwen-Image 3, Nano Banana 2.1 (1K) | `tgb-i2i-01`, `tgb-i2i-03` to `tgb-i2i-06` | 25 (1 per model per prompt) | ~$0.67 (list prices; GPT edit estimated) | Generated 2026-10-28, awaiting annotation |
 
+### Agent read, 2026-11-04
+
+The two unannotated rounds were read by an agent (Sonnet) against each prompt's `expected_text` and `structure_checks`: [`results/2026-11-04-agent-read.json`](results/2026-11-04-agent-read.json). **These are not human ratings**, and the grader saw model names on 3 rows before starting. Pass = text exact, structure right and legible, 5 images per model.
+
+| Model | `informational` | `whiteboards` |
+|---|---|---|
+| GPT Image 2.5 Flare | 5/5 | 0/5 |
+| Nano Banana 2.1 | 5/5 | 3/5 |
+| Ideogram V4.5 | 3/5 | not in round |
+| FLUX.3 Klein | 2/5 | 0/5 |
+| Qwen-Image 3 | 0/5 | 0/5 |
+| Seedream 5 Flash | not in round | 0/5 |
+
+The whiteboard prompts don't list the labels. A follow-up outside the rounds listed them in the prompt: Flare got every string exact on boards #08 (fal and Replicate) and #21, and Nano Banana 2.1 on #21, though both drew #21's bullets as arrows. So transcribing first matters more than the model; [Tech-Comms-Diagrams](https://github.com/danielrosehill/Tech-Comms-Diagrams) does this. Four images only, so it's an early signal.
+
 ## Open questions
 
 - Whether to add a notepad sketch (pen on paper) as a second image-to-image input alongside the whiteboard.
@@ -165,6 +180,7 @@ Daniel Rosehill, 2026-10-28, while writing a blog post explaining what an ASR fi
 
 - [Hebrew-Image-Generation-Eval](https://github.com/danielrosehill/Hebrew-Image-Generation-Eval): pass/fail Hebrew text rendering across twelve text-to-image models. Same text-fidelity question, for Hebrew rather than diagrams.
 - [Tech-Diagram-Image-Gen-Prompts](https://github.com/danielrosehill/Tech-Diagram-Image-Gen-Prompts): the prompt library (28 styles, 33 diagram types) for actually making these diagrams.
+- [Tech-Comms-Diagrams](https://github.com/danielrosehill/Tech-Comms-Diagrams): the plugin that puts these results to use: Mermaid, generation on fal or Replicate, and verification.
 - [Nano-Tech-Diagrams-MCP](https://github.com/danielrosehill/Nano-Tech-Diagrams-MCP): MCP server that generates them with Nano Banana 2.
 
 ## License

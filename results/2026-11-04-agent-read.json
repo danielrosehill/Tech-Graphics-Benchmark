@@ -1,0 +1,924 @@
+{
+ "grader": "agent read (Claude), not human ratings",
+ "null_count": 0,
+ "images": [
+  {
+   "gen_id": "b2d4cab7e8d1",
+   "prompt_id": "tgb-t2i-10",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "Code-/switching wrapped over two lines",
+   "run_id": "2026-10-28-informational",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "838f068f786d",
+   "prompt_id": "tgb-t2i-10",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "0dc1b6133758",
+   "prompt_id": "tgb-t2i-10",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.012
+  },
+  {
+   "gen_id": "f2b055877de4",
+   "prompt_id": "tgb-t2i-10",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": false,
+   "arrow_errors": [
+    "Replay -> badge arrow replaced by + on both rows"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Ideogram V4.5",
+   "usd_per_image": 0.03
+  },
+  {
+   "gen_id": "b3a1f81012ce",
+   "prompt_id": "tgb-t2i-10",
+   "text_exact": false,
+   "text_errors": [
+    "Jachnun v1.0 -> Jachun v1.0"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "a993fb51d6e7",
+   "prompt_id": "tgb-t2i-11",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Ideogram V4.5",
+   "usd_per_image": 0.03
+  },
+  {
+   "gen_id": "3798f71882df",
+   "prompt_id": "tgb-t2i-11",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "31b910997141",
+   "prompt_id": "tgb-t2i-11",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.012
+  },
+  {
+   "gen_id": "f78b6e7ffca1",
+   "prompt_id": "tgb-t2i-11",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "fine-tuned line is regular weight, not bold",
+   "run_id": "2026-10-28-informational",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "61fc2bb54b96",
+   "prompt_id": "tgb-t2i-11",
+   "text_exact": false,
+   "text_errors": [
+    "jargon -> jorgon"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "title/subtitle/card side-by-side with invented icon grid; fine-tuned line not bold",
+   "run_id": "2026-10-28-informational",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "b1157da1527a",
+   "prompt_id": "tgb-t2i-12",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.012
+  },
+  {
+   "gen_id": "f687a74dbfed",
+   "prompt_id": "tgb-t2i-12",
+   "text_exact": false,
+   "text_errors": [
+    "Jachnun v1.0 -> Jachmun v1.0"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "numbers centred not right-aligned",
+   "run_id": "2026-10-28-informational",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "8782e3bad83a",
+   "prompt_id": "tgb-t2i-12",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "glyphs slightly smeared but correct",
+   "run_id": "2026-10-28-informational",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "9035d0c068e3",
+   "prompt_id": "tgb-t2i-12",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "fffd9d7ba97d",
+   "prompt_id": "tgb-t2i-12",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Ideogram V4.5",
+   "usd_per_image": 0.03
+  },
+  {
+   "gen_id": "103939fa02fa",
+   "prompt_id": "tgb-t2i-13",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Ideogram V4.5",
+   "usd_per_image": 0.03
+  },
+  {
+   "gen_id": "407220a0f607",
+   "prompt_id": "tgb-t2i-13",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "icons do not fit steps (dome, tray, pin, funnel, user)",
+   "run_id": "2026-10-28-informational",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "ac4e2dbabf81",
+   "prompt_id": "tgb-t2i-13",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": false,
+   "arrow_errors": [
+    "invented extra bottom row of 3 panels with 3 extra arrows"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": "numbers sit above icons, not in a joined row of circles",
+   "run_id": "2026-10-28-informational",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "36ee2a23891f",
+   "prompt_id": "tgb-t2i-13",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.012
+  },
+  {
+   "gen_id": "0ae289fdd44c",
+   "prompt_id": "tgb-t2i-13",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "5f5bbc30be4d",
+   "prompt_id": "tgb-t2i-14",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-informational",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.012
+  },
+  {
+   "gen_id": "b1e844427947",
+   "prompt_id": "tgb-t2i-14",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "ticks shown with % sign, values correct",
+   "run_id": "2026-10-28-informational",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "21916ab5bc2e",
+   "prompt_id": "tgb-t2i-14",
+   "text_exact": false,
+   "text_errors": [
+    "Parakeet TDT (stock) -> Parkeet TTD (stock)"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "bars not proportional (Boxty bar ~1.6x too long), no tick labels",
+   "run_id": "2026-10-28-informational",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "719a07144baf",
+   "prompt_id": "tgb-t2i-14",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "bars not proportional: Sabich bar longer than Parakeet; no tick labels",
+   "run_id": "2026-10-28-informational",
+   "model": "Ideogram V4.5",
+   "usd_per_image": 0.03
+  },
+  {
+   "gen_id": "eeb20295ce98",
+   "prompt_id": "tgb-t2i-14",
+   "text_exact": false,
+   "text_errors": [
+    "axis ticks 0,2,4,6,8,10 -> 0,0,3,0,1:6"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "Parakeet bar teal (should be grey), Whisper Medium dark",
+   "run_id": "2026-10-28-informational",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "c9b9a5668661",
+   "prompt_id": "tgb-i2i-01",
+   "text_exact": false,
+   "text_errors": [
+    "Replicate -> REPLKATE.",
+    "Proxmox -> PLOXMOX",
+    "VM -> UM (faint)"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": false,
+   "failed_outright": false,
+   "note": "near-copy of photo, very pale",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "cc1dcbc9e266",
+   "prompt_id": "tgb-i2i-01",
+   "text_exact": false,
+   "text_errors": [
+    "Replicate -> REPLKATE.",
+    "Proxmox -> PLOXMOX"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "misspellings kept, not corrected; only colour added",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "178944c4dcf7",
+   "prompt_id": "tgb-i2i-01",
+   "text_exact": false,
+   "text_errors": [
+    "META MCP 2 -> META MCF2",
+    "META MCP -> META MCF",
+    "CF / Tailscale -> CF/Transcend",
+    "SSE -> ISSE",
+    "SBCs -> SIBCS"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [
+    "invented Docker -> META MCF arrow",
+    "invented LAN MCPs -> SSE Remote MCPs arrow",
+    "No proxy possible arrow made double-headed"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.015
+  },
+  {
+   "gen_id": "e4026cf43301",
+   "prompt_id": "tgb-i2i-01",
+   "text_exact": false,
+   "text_errors": [
+    "META MCP -> META MCR"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "one error only",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Seedream 5 Flash",
+   "usd_per_image": 0.027
+  },
+  {
+   "gen_id": "d27092e54d98",
+   "prompt_id": "tgb-i2i-01",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.044
+  },
+  {
+   "gen_id": "c92a534ed1ae",
+   "prompt_id": "tgb-i2i-03",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.044
+  },
+  {
+   "gen_id": "ca10b5942817",
+   "prompt_id": "tgb-i2i-03",
+   "text_exact": false,
+   "text_errors": [
+    "Is my hair a mess? -> a ness",
+    "COMB HAIR -> CONS HAIR",
+    "Meeting -> Mieting",
+    "CHILL OUT! -> CHILLOUT!",
+    "SOP -> rop"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "handwriting copied, colours added",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "cb81ac1aeeb5",
+   "prompt_id": "tgb-i2i-03",
+   "text_exact": false,
+   "text_errors": [
+    "a mess -> a ness",
+    "COMB HAIR -> CON8 HAIR",
+    "Y -> missing",
+    "N -> missing"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [
+    "doubled arrowheads on both branches"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Seedream 5 Flash",
+   "usd_per_image": 0.027
+  },
+  {
+   "gen_id": "5fb8e159e223",
+   "prompt_id": "tgb-i2i-03",
+   "text_exact": false,
+   "text_errors": [
+    "Learning - 3 -> Learning ->",
+    "a mess -> amess",
+    "Y -> missing",
+    "N -> missing"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.015
+  },
+  {
+   "gen_id": "b58d15535de3",
+   "prompt_id": "tgb-i2i-03",
+   "text_exact": false,
+   "text_errors": [
+    "Learning - 3 -> Learning -2+",
+    "Meeting -> Mating",
+    "SOP -> rep",
+    "a mess -> emex",
+    "COMB HAIR -> CON8 HAIR",
+    "CHILL OUT! -> CHILL OUT,",
+    "Y -> missing"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [
+    "invented arrow from title to Zoom Meeting Prep SOP"
+   ],
+   "legible": false,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "4947b715a357",
+   "prompt_id": "tgb-i2i-04",
+   "text_exact": false,
+   "text_errors": [
+    "What's your fav food? -> What's your favourite food? (reworded)",
+    "Daniel's -> DANIELS",
+    "= -> .",
+    "(could be voice -> voice!) -> voice+voice!"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [
+    "small invented connector between question note and PIZZA note"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": "extract content/context and \"&\"/\"a\" ambiguous in handwriting, not counted",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.015
+  },
+  {
+   "gen_id": "95a3e8640417",
+   "prompt_id": "tgb-i2i-04",
+   "text_exact": false,
+   "text_errors": [
+    "TRANSCRIBE -> TRANSCRFA",
+    "TACTIC -> TACTK",
+    "Use-case -> USe-case (copied)"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "handwriting copied incl. its misspellings",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "516fb7d60298",
+   "prompt_id": "tgb-i2i-04",
+   "text_exact": false,
+   "text_errors": [
+    "(could be voice -> voice!) -> (could be voice-voice!)"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.044
+  },
+  {
+   "gen_id": "f2aba5ff0b3c",
+   "prompt_id": "tgb-i2i-04",
+   "text_exact": false,
+   "text_errors": [
+    "TRANSCRIBE -> TRANSCRFA",
+    "vector DB -> vecter DB",
+    "TACTIC -> TACTK",
+    "Daniel's -> DANIELS",
+    "voice -> voice! -> voise+voice!",
+    "What's your fav food -> hhat's youn fow food"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Seedream 5 Flash",
+   "usd_per_image": 0.027
+  },
+  {
+   "gen_id": "b834931d7422",
+   "prompt_id": "tgb-i2i-04",
+   "text_exact": false,
+   "text_errors": [
+    "Human -> Lwman",
+    "BASIC -> BASK",
+    "TRANSCRIBE -> TRANSCRFSR",
+    "VECTOR DB split into VECTOR note + loose DB"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "tilted notes cover some text",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "172d2ef33a67",
+   "prompt_id": "tgb-i2i-05",
+   "text_exact": false,
+   "text_errors": [
+    "WORKFLOW 2 -> WORKFLOW",
+    "Hmm. -> Hmm,",
+    "vector DB -> vectorDB",
+    "User's fav beer -> users for beer"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [
+    "CREATE arrow ends at a cylinder, oval unlinked (as in source, ambiguous)"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.044
+  },
+  {
+   "gen_id": "e59abeabdf26",
+   "prompt_id": "tgb-i2i-05",
+   "text_exact": false,
+   "text_errors": [
+    "bubble: nothing about beer preferences -> garbled \"bosr EmEDFFGCLSS pnrknees\"",
+    "vector DB -> LectorDD",
+    "Super -> Sopee",
+    "CREATE -> CRCATE",
+    "User's fav -> ubsc2 fav"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": false,
+   "failed_outright": false,
+   "note": "only one line in a speech bubble; large invented robot",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "7e67f23e71a6",
+   "prompt_id": "tgb-i2i-05",
+   "text_exact": false,
+   "text_errors": [
+    "CREATE -> dropped",
+    "Hmm. nothing about beer -> Hrm, nigt about been",
+    "WORKFLOW 2 -> WORKFLOW2",
+    "vector DB -> vectorDB"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [
+    "invented arrow from memory oval to beer bottle"
+   ],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Seedream 5 Flash",
+   "usd_per_image": 0.027
+  },
+  {
+   "gen_id": "e5e57e51b9d6",
+   "prompt_id": "tgb-i2i-05",
+   "text_exact": false,
+   "text_errors": [
+    "Super bitter IPAs -> dropped",
+    "User's fav beer -> Uses for beer"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "\"Sure!\" bubble sits on the human character; robot only says CREATE",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.015
+  },
+  {
+   "gen_id": "ae32899dca15",
+   "prompt_id": "tgb-i2i-05",
+   "text_exact": false,
+   "text_errors": [
+    "Hmm. nothing about beer preferences -> Hrm. not hing c8out beer prefuences",
+    "vector DB -> vectorBD",
+    "Super -> Soper",
+    "prefer -> preper",
+    "CREATE -> CRCATE"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "copies handwriting; only 3 lines in bubbles; invented heart",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "124244dbc34b",
+   "prompt_id": "tgb-i2i-06",
+   "text_exact": true,
+   "text_errors": [],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Nano Banana 2.1",
+   "usd_per_image": 0.044
+  },
+  {
+   "gen_id": "007d8c8f4910",
+   "prompt_id": "tgb-i2i-06",
+   "text_exact": false,
+   "text_errors": [
+    "Agent Dev -> ACOIT PEV",
+    "Cleaned -> CKANED",
+    "Diagrams -> DIAGEARS",
+    "image 2 image -> image 2 irpge",
+    "Agent model -> Acont rode1",
+    "Agent 2 -> Ajnt2",
+    "Generate -> Cenemte",
+    "define -> DEPING",
+    "Subagents -> SUBAOOTS"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "FLUX.3 Klein",
+   "usd_per_image": 0.009
+  },
+  {
+   "gen_id": "252bdf17d869",
+   "prompt_id": "tgb-i2i-06",
+   "text_exact": false,
+   "text_errors": [
+    "etc -> ETR",
+    "Gemini -> Gemini x2 (invented second label)",
+    "Agent 2: -> Agent2:"
+   ],
+   "structure_ok": false,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "Gemini fork replaced by two separate Gemini lines",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Seedream 5 Flash",
+   "usd_per_image": 0.027
+  },
+  {
+   "gen_id": "f939a483e9fe",
+   "prompt_id": "tgb-i2i-06",
+   "text_exact": false,
+   "text_errors": [
+    "Agent Dev -> AGOIT PEV",
+    "Diagrams -> DIAGEARS",
+    "Agent model -> Acont rode1",
+    "Agent 2 -> Ajnt2",
+    "Generate -> Concate",
+    "define -> DEFINC",
+    "Subagents -> SUBAOOTS"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": "dim, thin tubes",
+   "run_id": "2026-10-28-whiteboards",
+   "model": "Qwen-Image 3",
+   "usd_per_image": 0.04
+  },
+  {
+   "gen_id": "3aa8ed2225f4",
+   "prompt_id": "tgb-i2i-06",
+   "text_exact": false,
+   "text_errors": [
+    "Whiteboard(s) -> Whiteboards(:)",
+    "Agent 2: -> AgentL:",
+    "Dev Spec -> DW SPEC",
+    "etc -> ETR"
+   ],
+   "structure_ok": true,
+   "arrow_errors": [],
+   "legible": true,
+   "failed_outright": false,
+   "note": null,
+   "run_id": "2026-10-28-whiteboards",
+   "model": "GPT Image 2.5 Flare",
+   "usd_per_image": 0.015
+  }
+ ],
+ "by_model": {
+  "2026-10-28-informational": {
+   "Nano Banana 2.1": {
+    "n": 5,
+    "text_exact": 5,
+    "structure_ok": 5,
+    "all_pass": 5,
+    "usd_per_image": 0.04
+   },
+   "FLUX.3 Klein": {
+    "n": 5,
+    "text_exact": 4,
+    "structure_ok": 2,
+    "all_pass": 2,
+    "usd_per_image": 0.009
+   },
+   "GPT Image 2.5 Flare": {
+    "n": 5,
+    "text_exact": 5,
+    "structure_ok": 5,
+    "all_pass": 5,
+    "usd_per_image": 0.012
+   },
+   "Ideogram V4.5": {
+    "n": 5,
+    "text_exact": 5,
+    "structure_ok": 3,
+    "all_pass": 3,
+    "usd_per_image": 0.03
+   },
+   "Qwen-Image 3": {
+    "n": 5,
+    "text_exact": 1,
+    "structure_ok": 2,
+    "all_pass": 0,
+    "usd_per_image": 0.04
+   }
+  },
+  "2026-10-28-whiteboards": {
+   "FLUX.3 Klein": {
+    "n": 5,
+    "text_exact": 0,
+    "structure_ok": 4,
+    "all_pass": 0,
+    "usd_per_image": 0.009
+   },
+   "Qwen-Image 3": {
+    "n": 5,
+    "text_exact": 0,
+    "structure_ok": 3,
+    "all_pass": 0,
+    "usd_per_image": 0.04
+   },
+   "GPT Image 2.5 Flare": {
+    "n": 5,
+    "text_exact": 0,
+    "structure_ok": 2,
+    "all_pass": 0,
+    "usd_per_image": 0.015
+   },
+   "Seedream 5 Flash": {
+    "n": 5,
+    "text_exact": 0,
+    "structure_ok": 2,
+    "all_pass": 0,
+    "usd_per_image": 0.027
+   },
+   "Nano Banana 2.1": {
+    "n": 5,
+    "text_exact": 3,
+    "structure_ok": 5,
+    "all_pass": 3,
+    "usd_per_image": 0.044
+   }
+  }
+ }
+}
